@@ -1,0 +1,26 @@
+{
+    "name":"Preside Data Objects Framework",
+    "slug":"preside-data-objects",
+    "version":"1.0.0",
+    "author":"Pixl8 Interactive",
+    "shortDescription":"Data layer framework used by PresideCMS",
+    "private":false,
+    "license":[
+        {
+            "type":"LGPL-2.1",
+            "url":"http://opensource.org/licenses/LGPL-2.1"
+        }
+    ],
+    "engines":[
+        {
+            "type":"lucee",
+            "version":">=4.5.x"
+        }
+    ],
+    "devDependencies":{
+        "testbox":"2.0.0"
+    },
+    "installPaths":{
+        "testbox":"tests/testbox"
+    }
+}
