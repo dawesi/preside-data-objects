@@ -6,5 +6,6 @@ before_install:
 - sudo apt-get update
 install:
 - sudo apt-get install -q -y --force-yes commandbox
+- box install
 script:
 - "./runtests.sh"
