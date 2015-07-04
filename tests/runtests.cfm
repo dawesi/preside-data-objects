@@ -5,11 +5,10 @@
 	}
 
 	try {
-
 		testbox = new testbox.system.TestBox( options={}, reporter="text", directory={
 			  recurse  = true
 			, mapping  = "tests"
-			, filter   = function( required path ){ echo( path );return true; }
+			, filter   = function( required path ){ return true; }
 		} );
 
 		echo( testbox.run() );

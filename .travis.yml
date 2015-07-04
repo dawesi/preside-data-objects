@@ -8,4 +8,4 @@ install:
 - sudo apt-get install -q -y --force-yes commandbox
 - box install
 script:
-- "./runtests.sh"
+- "./test"
