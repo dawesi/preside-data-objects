@@ -12,9 +12,11 @@ component extends="testbox.system.BaseSpec"{
 
 	function run(){
 
-		describe( "something", function(){
-			it( "should do cool stuff", function(){
-				expect( true ).toBe( true );
+		var scanner = new presidedataobjects.library.MultipleDirectoryObjectScanner();
+
+		describe( "scanDirectories()", function(){
+			it( "should return an empty array when given no directories", function(){
+				expect( scanner.scanDirectories( [] ) ).toBe( [] );
 			} );
 		} );
 
