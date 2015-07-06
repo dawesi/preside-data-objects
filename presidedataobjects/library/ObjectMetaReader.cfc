@@ -19,7 +19,7 @@ component extends="presidedataobjects.util.Base" {
 			var objectPath   = Replace( ReReplace( sourceFilePath, "^/(.*?)\.cfc$", "\1" ), "[/]", ".", "all" );
 			var meta         = GetComponentMetaData( objectPath );
 			var objectProps  = Duplicate( meta.properties ?: [] );
-			var orderedProps = _getOrderedPropertiesInAHackyWayBecauseLuceeGivesThemInRandomOrder( sourceFilePath );
+			var orderedProps = _getPropertyNamesInOrder( sourceFilePath );
 
 			objectProps.sort( function( a, b ){
 				return orderedProps.find( a.name ?: "" ) > orderedProps.find( b.name ?: "" ) ? 1 : -1;
@@ -34,7 +34,7 @@ component extends="presidedataobjects.util.Base" {
 	}
 
 // PRIVATE UTILITY
-	private array function _getOrderedPropertiesInAHackyWayBecauseLuceeGivesThemInRandomOrder( required string pathToCfc ) output=false {
+	private array function _getPropertyNamesInOrder( required string pathToCfc ) output=false {
 		var cfcContent      = FileRead( arguments.pathToCfc );
 		var propertyMatches = _reSearch( 'property\s+[^;/>]*name="([a-zA-Z_\$][a-zA-Z0-9_\$]*)"', cfcContent );
 
