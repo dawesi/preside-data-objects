@@ -5,7 +5,7 @@
 	}
 
 	try {
-		testbox = new testbox.system.TestBox( options={}, reporter="text", directory={
+		testbox = new testbox.system.TestBox( options={}, reporter="simple", directory={
 			  recurse  = true
 			, mapping  = "tests"
 			, filter   = function( required path ){ return true; }
