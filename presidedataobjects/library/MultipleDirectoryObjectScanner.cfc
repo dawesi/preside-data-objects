@@ -15,23 +15,14 @@ component {
 			var objectFilePaths = DirectoryList( fullDirPath, true, 'path', "*.cfc" );
 
 			for( var objectFilePath in objectFilePaths ){
-				if ( !_objectIsExcluded( objectFilePath ) ) {
-					var objectName = ReReplace( ListLast( objectFilePath, "\/" ), "\.cfc$", "" );
-					var mappedPath = dir & Replace( Replace( objectFilePath, fullDirPath, "" ), "\", "/", "all" );
+				var objectName = ReReplace( ListLast( objectFilePath, "\/" ), "\.cfc$", "" );
+				var mappedPath = dir & Replace( Replace( objectFilePath, fullDirPath, "" ), "\", "/", "all" );
 
-					map[ objectName ] = map[ objectName ] ?: [];
-					map[ objectName ].append( mappedPath );
-				}
+				map[ objectName ] = map[ objectName ] ?: [];
+				map[ objectName ].append( mappedPath );
 			}
 		}
 
 		return map;
-	}
-
-// PRIVATE
-	private boolean function _objectIsExcluded( required string objectFilePath ) {
-		var objectName = ReReplace( ListLast( arguments.objectFilePath, "\/" ), "\.cfc$", "" );
-
-		return objectName.startsWith( "_" );
 	}
 }

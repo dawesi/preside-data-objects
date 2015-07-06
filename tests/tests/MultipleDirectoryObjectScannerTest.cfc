@@ -31,9 +31,6 @@ component extends="testbox.system.BaseSpec"{
 				expect( scanner.scanDirectories( directories=dirs ) ).toBe( expectedResult );
 			} );
 
-			it( "should ignore cfc files that start with an underscore", function(){
-				expect( scanner.scanDirectories( directories=[ "/resources/directoryscanner/testunderscores" ] ) ).toBe( {} );
-			} );
 
 		} );
 
