@@ -12,7 +12,7 @@ component extends="testbox.system.BaseSpec"{
 
 	function run(){
 
-		var reader = new presidedataobjects.library.ObjectPropertyReader();
+		var reader = new presidedataobjects.library.ObjectMetaReader();
 
 		describe( "readProperties()", function(){
 
@@ -21,7 +21,7 @@ component extends="testbox.system.BaseSpec"{
 			} );
 
 			it( "should return an array of properties defined on an object", function(){
-				var sourceFiles = [ "/resources/objectpropertyreader/object_a.cfc" ];
+				var sourceFiles = [ "/resources/objectmetareader/object_a.cfc" ];
 				var expectedResult = [
 					  { "name"="label", "type"="string", "dbtype"="varchar", "maxlength"=100, "required"=true, "uniqueindexes"="title" }
 					, { "name"="description", "type"="string", "dbtype"="text" }

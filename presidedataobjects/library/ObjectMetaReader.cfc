@@ -1,5 +1,6 @@
 /**
- * Class that provides logic for reading property attributes from an object
+ * Class that provides logic for reading various bits of metadata from objects
+ * including properties and object attributes.
  *
  */
 component extends="presidedataobjects.util.Base" {
