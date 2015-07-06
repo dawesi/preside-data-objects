@@ -7,6 +7,15 @@
  */
 component {
 
+	/**
+	 * Scans a list of directories for object files. Returns a structure who's keys are
+	 * object names (bare filenames) and who's values are an array of mapped file paths
+	 * to all instances of CFC files for the object (there may be multiple due to multiple
+	 * directories)
+	 *
+	 * @directories.hint Array of mapped paths to directories in which to scan for object files
+	 *
+	 */
 	public struct function scanDirectories( required array directories ) {
 		var map = {};
 
