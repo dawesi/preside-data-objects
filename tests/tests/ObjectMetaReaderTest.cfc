@@ -14,10 +14,10 @@ component extends="testbox.system.BaseSpec"{
 
 		var reader = new presidedataobjects.library.ObjectMetaReader();
 
-		describe( "readProperties()", function(){
+		describe( "readMeta()", function(){
 
 			it( "should return an empty array of properties passed an empty array of filepaths", function(){
-				expect( reader.readProperties( sourceFiles=[] ) ).tobe( [] );
+				expect( reader.readMeta( sourceFiles=[] ).properties ).tobe( [] );
 			} );
 
 			it( "should return an array of properties defined on an object", function(){
@@ -27,7 +27,19 @@ component extends="testbox.system.BaseSpec"{
 					, { "name"="description", "type"="string", "dbtype"="text" }
 				];
 
-				expect( reader.readProperties( sourceFiles=sourceFiles ) ).tobe( expectedResult );
+				expect( reader.readMeta( sourceFiles=sourceFiles ).properties ).tobe( expectedResult );
+			} );
+
+			it( "should merge property definitions of extended classes", function(){
+				var sourceFiles = [ "/resources/objectmetareader/object_that_extends_object_a.cfc" ];
+
+				var expectedResult = [
+					  { "name"="label", "type"="string", "dbtype"="varchar", "maxlength"=100, "required"=true, "uniqueindexes"="title" }
+					, { "name"="description", "type"="string", "dbtype"="text", "required"=true }
+					, { "name"="newprop", "type"="boolean", "dbtype"="boolean" }
+				];
+
+				expect( reader.readMeta( sourceFiles=sourceFiles ).properties ).tobe( expectedResult );
 			} );
 
 		} );
