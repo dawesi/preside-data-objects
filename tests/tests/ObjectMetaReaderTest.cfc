@@ -52,6 +52,15 @@ component extends="testbox.system.BaseSpec"{
 				expect( reader.readMeta( sourceFiles=sourceFiles ).properties ).tobe( expectedResult );
 			} );
 
+			it( "should remove property definitions when later source files define 'deleted=true' on the property", function(){
+				var sourceFiles = [ "/resources/objectmetareader/object_c.cfc", "/resources/objectmetareader/object_d.cfc"  ];
+				var expectedResult = [
+					{ "name"="object_d_property", "type"="string" }
+				];
+
+				expect( reader.readMeta( sourceFiles=sourceFiles ).properties ).tobe( expectedResult );
+			} );
+
 		} );
 
 	}

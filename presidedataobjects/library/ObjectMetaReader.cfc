@@ -25,6 +25,8 @@ component extends="presidedataobjects.util.Base" {
 			_mergeMeta( meta, objectMeta );
 		}
 
+		_removeDeleteProps( meta );
+
 		return meta;
 	}
 
@@ -59,10 +61,14 @@ component extends="presidedataobjects.util.Base" {
 				return ( existingProp.name ?: "" ) == ( prop.name ?: "" );
 			} );
 
-			if ( existingIndex ) {
-				_mergeProperties( sourceMeta.properties[ existingIndex ], prop );
+			if ( existingIndex && IsBoolean( prop.deleted ?: "" ) && prop.deleted ) {
+				sourceMeta.properties.deleteAt( existingIndex );
 			} else {
-				sourceMeta.properties.append( Duplicate( prop ) );
+				if ( existingIndex ) {
+					_mergeProperties( sourceMeta.properties[ existingIndex ], prop );
+				} else {
+					sourceMeta.properties.append( Duplicate( prop ) );
+				}
 			}
 		}
 	}
@@ -86,6 +92,16 @@ component extends="presidedataobjects.util.Base" {
 		}
 
 		return [];
+	}
+
+	private void function _removeDeleteProps( required struct meta ) {
+		for( var i=meta.properties.len(); i>0; i-- ) {
+			var prop = meta.properties[ i ];
+
+			if ( IsBoolean( prop.deleted ?: "" ) && prop.deleted ) {
+				meta.properties.deleteAt( i );
+			}
+		}
 	}
 
 
