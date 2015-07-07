@@ -19,8 +19,10 @@ component extends="presidedataobjects.util.Base" {
 		};
 
 		for( var sourceFilePath in arguments.sourceFiles ) {
-			var objectPath     = Replace( ReReplace( sourceFilePath, "^/(.*?)\.cfc$", "\1" ), "[/]", ".", "all" );
-			meta = _parseComponentMetaData( GetComponentMetaData( objectPath ), sourceFilePath );
+			var objectPath = Replace( ReReplace( sourceFilePath, "^/(.*?)\.cfc$", "\1" ), "[/]", ".", "all" );
+			var objectMeta = _parseComponentMetaData( GetComponentMetaData( objectPath ), sourceFilePath );
+
+			_mergeMeta( meta, objectMeta );
 		}
 
 		return meta;
@@ -28,7 +30,8 @@ component extends="presidedataobjects.util.Base" {
 
 // PRIVATE UTILITY
 	private struct function _parseComponentMetaData( required struct meta, required string filepath ) {
-		var parsed = { properties=[] };
+		var parsed   = { properties=[] };
+		var extended = { properties=[] };
 
 		if ( ( arguments.meta.extends ?: {} ).count() ) {
 			parsed = _parseComponentMetaData( arguments.meta.extends, arguments.meta.extends.path );
@@ -42,18 +45,36 @@ component extends="presidedataobjects.util.Base" {
 		} );
 
 		for( var prop in objectProps ) {
-			var existingIndex = parsed.properties.find( function( existingProp ){
+			extended.properties.append( prop );
+		}
+
+		_mergeMeta( parsed, extended );
+
+		return parsed;
+	}
+
+	private void function _mergeMeta( required struct sourceMeta, required struct metaToMerge ) {
+		for( var prop in metaToMerge.properties ) {
+			var existingIndex = sourceMeta.properties.find( function( existingProp ){
 				return ( existingProp.name ?: "" ) == ( prop.name ?: "" );
 			} );
 
 			if ( existingIndex ) {
-				parsed.properties[ existingIndex ].append( prop );
+				_mergeProperties( sourceMeta.properties[ existingIndex ], prop );
 			} else {
-				parsed.properties.append( Duplicate( prop ) );
+				sourceMeta.properties.append( Duplicate( prop ) );
 			}
 		}
+	}
 
-		return parsed;
+	private void function _mergeProperties( required struct sourceProperty, required struct propertyToMerge ) {
+		for( var attribute in propertyToMerge ) {
+			var ignoreProperty = attribute == "type" && propertyToMerge[ attribute ] == "any";
+
+			if ( !ignoreProperty ) {
+				sourceProperty[ attribute ] = propertyToMerge[ attribute ];
+			}
+		}
 	}
 
 	private array function _getPropertyNamesInOrder( required string pathToCfc ) output=false {
