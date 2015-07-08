@@ -61,6 +61,42 @@ component extends="testbox.system.BaseSpec"{
 				expect( reader.readMeta( sourceFiles=sourceFiles ).properties ).tobe( expectedResult );
 			} );
 
+			it( "should return an empty struct of attributes when passed an empty array of source files", function(){
+				expect( reader.readMeta( sourceFiles=[] ).attributes ).tobe( {} );
+			} );
+
+			it( "should return a structure of attributes defined on the component", function(){
+				var sourceFiles = [ "/resources/objectmetareader/object_a.cfc" ];
+				var expectedResult = {
+					  datamanager = true
+					, labelfield  = "label"
+				};
+
+				expect( reader.readMeta( sourceFiles=sourceFiles ).attributes ).tobe( expectedResult );
+			} );
+
+			it( "should include attributes defined on extended objects", function(){
+				var sourceFiles = [ "/resources/objectmetareader/object_that_extends_object_a.cfc" ];
+				var expectedResult = {
+					  datamanager = true
+					, labelfield  = "newprop"
+					, versioned   = false
+				};
+
+				expect( reader.readMeta( sourceFiles=sourceFiles ).attributes ).tobe( expectedResult );
+			} );
+
+			it( "should include attributes defined in all source cfc files", function(){
+				var sourceFiles = [ "/resources/objectmetareader/object_a.cfc", "/resources/objectmetareader/object_b.cfc", "/resources/objectmetareader/object_c.cfc"  ];
+				var expectedResult = {
+					  datamanager   = false
+					, labelfield    = "label"
+					, versioned     = false
+					, testattribute = "test value"
+				};
+
+				expect( reader.readMeta( sourceFiles=sourceFiles ).attributes ).tobe( expectedResult );
+			} );
 		} );
 
 	}

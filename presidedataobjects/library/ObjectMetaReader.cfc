@@ -32,8 +32,9 @@ component extends="presidedataobjects.util.Base" {
 
 // PRIVATE UTILITY
 	private struct function _parseComponentMetaData( required struct meta, required string filepath ) {
-		var parsed   = { properties=[] };
-		var extended = { properties=[] };
+		var parsed   = { properties=[], attributes={} };
+		var extended = { properties=[], attributes={} };
+		var ignoredAttributes = [ "output", "extends", "persistent", "accessors", "hint", "remoteAddress", "path", "displayName", "synchronized", "fullname", "name", "type", "hashcode" ];
 
 		if ( ( arguments.meta.extends ?: {} ).count() ) {
 			parsed = _parseComponentMetaData( arguments.meta.extends, arguments.meta.extends.path );
@@ -48,6 +49,12 @@ component extends="presidedataobjects.util.Base" {
 
 		for( var prop in objectProps ) {
 			extended.properties.append( prop );
+		}
+
+		for( var attribute in arguments.meta ) {
+			if ( IsSimpleValue( arguments.meta[ attribute ] ) && !ignoredAttributes.findNoCase( attribute ) ) {
+				extended.attributes[ attribute ] = arguments.meta[ attribute ];
+			}
 		}
 
 		_mergeMeta( parsed, extended );
@@ -71,6 +78,8 @@ component extends="presidedataobjects.util.Base" {
 				}
 			}
 		}
+
+		sourceMeta.attributes.append( metaToMerge.attributes );
 	}
 
 	private void function _mergeProperties( required struct sourceProperty, required struct propertyToMerge ) {
