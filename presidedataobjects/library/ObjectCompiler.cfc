@@ -27,6 +27,15 @@ component {
 		return obj;
 	}
 
+	public Object function compileDynamicObject( required string objectName, required array properties, required struct attributes ) {
+		return new Object(
+			  framework  = _getFramework()
+			, objectName = arguments.objectName
+			, attributes = arguments.attributes
+			, properties = arguments.properties
+		);
+	}
+
 // GETTERS AND SETTERS
 	private any function _getFramework() {
 		return _framework;

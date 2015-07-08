@@ -32,6 +32,24 @@ component extends="testbox.system.BaseSpec"{
 				expect( compiledObject.selectData() ).toBe( QueryNew( 'test,this,stuff' ) );
 			} );
 		} );
+
+		describe( "compileDynamicObject", function(){
+			it( "should take an objectname, and set of porperties and attributes, and return a compiled preside data object", function(){
+				var objectName     = "some_object";
+				var attributes     = { datamanager=true, labelfield="label" };
+				var properties     = [ { name="label", required=true } ];
+				var compiledObject = compiler.compileDynamicObject( objectName=objectName, attributes=attributes, properties=properties );
+
+				expect( compiledObject.getObjectName() ).toBe( objectName );
+				expect( compiledObject.listAttributes() ).toBe( [ "datamanager", "labelfield" ] );
+				expect( compiledObject.getAttribute( "labelfield" ) ).toBe( "label" );
+				expect( compiledObject.listProperties() ).toBe( [ "label" ] );
+				expect( compiledObject.getProperty( "label" ) ).toBe( properties[1] );
+
+				mockFramework.$( "selectData", QueryNew( 'test,this,stuff' ) );
+				expect( compiledObject.selectData() ).toBe( QueryNew( 'test,this,stuff' ) );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
