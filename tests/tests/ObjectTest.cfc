@@ -84,6 +84,12 @@ component extends="testbox.system.BaseSpec"{
 				} ).toThrow( "presidedataobjects.object.propertynotfound" );
 			} );
 
+			it( "should return the property that matches the passed property name", function(){
+				var obj = new presidedataobjects.library.Object( objectName="some_object", properties=[ { name="prop1", type="boolean" }, { name="prop2" } ] );
+
+				expect( obj.getProperty( "prop1" ) ).tobe( { name="prop1", type="boolean" } );
+			} );
+
 		} );
 	}
 }
