@@ -1,3 +1,9 @@
+/**
+ * Class to provide logic for producing fully ready and 'compiled' preside data objects.
+ * This means objects that have all their properties, attributes and methods merged
+ * and any default and calculated properties/attributes added to them
+ *
+ */
 component {
 
 // CONSTRUCTOR
@@ -10,6 +16,13 @@ component {
 	}
 
 // PUBLIC API
+	/**
+	 * Compiles an object from its source files
+	 *
+	 * @objectName.hint  The name of the object
+	 * @sourceFiles.hint Array of mapped paths to source files for the object
+	 *
+	 */
 	public Object function compileObject( required string objectName, required array sourceFiles ) {
 		var meta = _getMetaReader().readMeta( arguments.sourceFiles );
 		var obj  = new Object(
@@ -27,6 +40,14 @@ component {
 		return obj;
 	}
 
+	/**
+	 * Compiles an object based on dynamically generated attributes and properties
+	 *
+	 * @objectName.hint The name of the object
+	 * @properties.hint Array of properties for the object
+	 * @attributes.hint Structure of attributes for the object
+	 *
+	 */
 	public Object function compileDynamicObject( required string objectName, required array properties, required struct attributes ) {
 		arguments.attributes.dynamic = true;
 
