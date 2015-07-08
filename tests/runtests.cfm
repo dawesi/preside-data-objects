@@ -1,4 +1,5 @@
 <cfscript>
+	isCli = ReFindNoCase( "^CLI\/", cgi.server_protocol );
 
 	function exitCode( required numeric code ) {
 		var exitcodeFile = GetDirectoryFromPath( GetCurrentTemplatePath() ) & "/.exitcode";
@@ -6,7 +7,7 @@
 	}
 
 	try {
-		reporter = cgi.server_protocol == "CLI/1.0" ? "text" : "simple";
+		reporter = isCli ? "text" : "simple";
 		testbox  = new testbox.system.TestBox( options={}, reporter=reporter, directory={
 			  recurse  = true
 			, mapping  = "tests"
@@ -15,12 +16,18 @@
 
 		echo( testbox.run() );
 
-		resultObject = testbox.getResult();
-		errors       = resultObject.getTotalFail() + resultObject.getTotalError();
-		exitCode( errors ? 1 : 0 );
+		if ( isCli ) {
+			resultObject = testbox.getResult();
+			errors       = resultObject.getTotalFail() + resultObject.getTotalError();
+			exitCode( errors ? 1 : 0 );
+		}
 
 	} catch ( any e ) {
-		echo( "An error occurred running the tests. Message: [#e.message#], Detail: [#e.detail#]" );
-		exitCode( 1 );
+		if ( isCli ) {
+			echo( "An error occurred running the tests. Message: [#e.message#], Detail: [#e.detail#]" );
+			exitCode( 1 );
+		} else {
+			rethrow;
+		}
 	}
 </cfscript>
