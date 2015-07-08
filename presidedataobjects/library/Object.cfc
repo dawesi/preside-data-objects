@@ -8,12 +8,21 @@
 component {
 
 // CONSTRUCTOR
-	public any function init( struct attributes={}, array properties=[] ) {
+	public any function init(
+		  required string objectName
+		,          struct attributes={}
+		,          array properties=[]
+	) {
+		_setObjectName( arguments.objectName );
 		_setAttributes( arguments.attributes );
 		_setProperties( arguments.properties );
 	}
 
 // PUBLIC API
+	public string function getObjectName() {
+		return _getObjectName();
+	}
+
 	public boolean function attributeExists( required string attributeName ) {
 		var attributes = _getAttributes();
 		return attributes.keyExists( arguments.attributeName );
@@ -38,6 +47,13 @@ component {
 
 
 // GETTERS AND SETTERS
+	private string function _getObjectName() {
+		return _objectName;
+	}
+	private void function _setObjectName( required string objectName ) {
+		_objectName = arguments.objectName;
+	}
+
 	private struct function _getAttributes() {
 		return _attributes;
 	}
