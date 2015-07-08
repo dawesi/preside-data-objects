@@ -41,13 +41,22 @@ component extends="testbox.system.BaseSpec"{
 				var compiledObject = compiler.compileDynamicObject( objectName=objectName, attributes=attributes, properties=properties );
 
 				expect( compiledObject.getObjectName() ).toBe( objectName );
-				expect( compiledObject.listAttributes() ).toBe( [ "datamanager", "labelfield" ] );
+				expect( compiledObject.listAttributes() ).toBe( [ "datamanager", "dynamic", "labelfield" ] );
 				expect( compiledObject.getAttribute( "labelfield" ) ).toBe( "label" );
 				expect( compiledObject.listProperties() ).toBe( [ "label" ] );
 				expect( compiledObject.getProperty( "label" ) ).toBe( properties[1] );
 
 				mockFramework.$( "selectData", QueryNew( 'test,this,stuff' ) );
 				expect( compiledObject.selectData() ).toBe( QueryNew( 'test,this,stuff' ) );
+			} );
+
+			it( "should add a 'dynamic=true' attribute to the object", function(){
+				var objectName     = "some_object";
+				var attributes     = { datamanager=true, labelfield="label" };
+				var properties     = [ { name="label", required=true } ];
+				var compiledObject = compiler.compileDynamicObject( objectName=objectName, attributes=attributes, properties=properties );
+
+				expect( compiledObject.getAttribute( "dynamic", false ) ).toBe( true );
 			} );
 		} );
 	}

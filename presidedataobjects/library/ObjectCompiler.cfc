@@ -28,6 +28,8 @@ component {
 	}
 
 	public Object function compileDynamicObject( required string objectName, required array properties, required struct attributes ) {
+		arguments.attributes.dynamic = true;
+
 		return new Object(
 			  framework  = _getFramework()
 			, objectName = arguments.objectName
