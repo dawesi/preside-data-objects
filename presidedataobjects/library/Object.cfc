@@ -10,10 +10,12 @@ component {
 // CONSTRUCTOR
 	public any function init(
 		  required string objectName
+		, required any    framework
 		,          struct attributes={}
 		,          array properties=[]
 	) {
 		_setObjectName( arguments.objectName );
+		_setFramework( arguments.framework );
 		_setAttributes( arguments.attributes );
 		_setProperties( arguments.properties );
 	}
@@ -53,6 +55,12 @@ component {
 		return properties[ arguments.propertyName ] ?: throw( type="presidedataobjects.object.propertynotfound" );
 	}
 
+	public any function onMissingMethod( required string methodName, required any methodArgs ) {
+		var fw = _getFramework();
+
+		return fw[ arguments.methodName ]( argumentCollection=arguments.methodArgs, objectName=_getObjectName() );
+	}
+
 
 // GETTERS AND SETTERS
 	private string function _getObjectName() {
@@ -78,5 +86,12 @@ component {
 		for( var prop in arguments.properties ) {
 			_properties[ prop.name ?: "" ] = prop;
 		}
+	}
+
+	private any function _getFramework() {
+		return _framework;
+	}
+	private void function _setFramework( required any framework ) {
+		_framework = arguments.framework;
 	}
 }
