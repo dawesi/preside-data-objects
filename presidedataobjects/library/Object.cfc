@@ -21,40 +21,82 @@ component {
 	}
 
 // PUBLIC API
+	/**
+	 * Returns the name of the object
+	 *
+	 */
 	public string function getObjectName() {
 		return _getObjectName();
 	}
 
+	/**
+	 * Returns an array of attribute names that are defined
+	 * on the object
+	 *
+	 */
 	public array function listAttributes() {
 		return _getAttributes().keyArray();
 	}
 
+	/**
+	 * Returns whether or not the given attribute exists.
+	 *
+	 * @attributeName.hint The name of the attribute
+	 */
 	public boolean function attributeExists( required string attributeName ) {
 		var attributes = _getAttributes();
 		return attributes.keyExists( arguments.attributeName );
 	}
 
+	/**
+	 * Returns the value of the given attribute or, if it does not exist, the value of
+	 * the `defaultValue` argument.
+	 *
+	 * @attributeName.hint The name of the attribute
+	 * @defaultValue.hint  Value to return should the given attribute not exist
+	 */
 	public any function getAttribute( required string attributeName, any defaultValue="" ) {
 		var attributes = _getAttributes();
 
 		return attributes[ arguments.attributeName ] ?: arguments.defaultValue;
 	}
 
+	/**
+	 * Returns an array of the property names defined on the object
+	 *
+	 */
 	public array function listProperties() {
 		return _getProperties().keyArray();
 	}
 
+	/**
+	 * Returns whether or not the given property exists
+	 *
+	 * @propertyName.hint The name of the property
+	 *
+	 */
 	public boolean function propertyExists( required string propertyName ) {
 		var properties = _getProperties();
 		return properties.keyExists( arguments.propertyName );
 	}
 
+	/**
+	 * Returns the given property. Throws a 'presidedataobjects.object.propertynotfound'
+	 * error if the property does not exist.
+	 *
+	 * @propertyName.hint The name of the property
+	 */
 	public struct function getProperty( required string propertyName ) {
 		var properties = _getProperties();
 
 		return properties[ arguments.propertyName ] ?: throw( type="presidedataobjects.object.propertynotfound" );
 	}
 
+
+// UTILITY
+	/**
+	 * @autodoc false
+	 */
 	public any function onMissingMethod( required string methodName, required any methodArgs ) {
 		var fw = _getFramework();
 
