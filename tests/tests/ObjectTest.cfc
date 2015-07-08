@@ -47,5 +47,33 @@ component extends="testbox.system.BaseSpec"{
 			} );
 
 		} );
+
+		describe( "propertyExists()", function(){
+
+			it( "should return false when the given property does not exist", function(){
+				var obj = new presidedataobjects.library.Object();
+
+				expect( obj.propertyExists( "nonexistant" ) ).tobe( false );
+			} );
+
+			it( "should return true when the given property exists", function(){
+				var obj = new presidedataobjects.library.Object( properties=[ { name="prop1" }, { name="prop2" } ] );
+
+				expect( obj.propertyExists( "prop1" ) ).tobe( true );
+			} );
+
+		} );
+
+		describe( "getProperty()", function(){
+
+			it( "should throw an informative error when the property does not exist", function(){
+				var obj = new presidedataobjects.library.Object();
+
+				expect( function(){
+					obj.getProperty( "someproperty" );
+				} ).toThrow( "presidedataobjects.object.propertynotfound" );
+			} );
+
+		} );
 	}
 }

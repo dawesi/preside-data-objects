@@ -8,8 +8,9 @@
 component {
 
 // CONSTRUCTOR
-	public any function init( struct attributes={} ) {
+	public any function init( struct attributes={}, array properties=[] ) {
 		_setAttributes( arguments.attributes );
+		_setProperties( arguments.properties );
 	}
 
 // PUBLIC API
@@ -24,6 +25,17 @@ component {
 		return attributes[ arguments.attributeName ] ?: arguments.defaultValue;
 	}
 
+	public boolean function propertyExists( required string propertyName ) {
+		var properties = _getProperties();
+		return properties.keyExists( arguments.propertyName );
+	}
+
+	public struct function getProperty( required string propertyName ) {
+		var properties = _getProperties();
+
+		return properties[ arguments.propertyName ] ?: throw( type="presidedataobjects.object.propertynotfound" );
+	}
+
 
 // GETTERS AND SETTERS
 	private struct function _getAttributes() {
@@ -31,5 +43,16 @@ component {
 	}
 	private void function _setAttributes( required struct attributes ) {
 		_attributes = arguments.attributes;
+	}
+
+	private struct function _getProperties() {
+		return _properties;
+	}
+	private void function _setProperties( required array properties ) {
+		_properties = StructNew( "linked" );
+
+		for( var prop in arguments.properties ) {
+			_properties[ prop.name ?: "" ] = prop;
+		}
 	}
 }
