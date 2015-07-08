@@ -21,6 +21,37 @@ component extends="testbox.system.BaseSpec"{
 
 		} );
 
+		describe( "listAttributes()", function(){
+
+			it( "should return an array of attribute names defined on the object", function(){
+				var attributes             = StructNew( "linked" );
+				    attributes.test        = "value";
+				    attributes.test2       = "value2";
+				    attributes.anothertest = "anothervalue";
+
+				var obj = new presidedataobjects.library.Object( objectName="some_object", attributes=attributes );
+
+				expect( obj.listAttributes() ).tobe( [ "test", "test2", "anothertest" ] );
+			} );
+
+		} );
+
+		describe( "attributeExists()", function(){
+
+			it( "should return false when the attribute does not exist", function(){
+				var obj = new presidedataobjects.library.Object( objectName="some_object" );
+
+				expect( obj.attributeExists( "nonexistant" ) ).tobe( false );
+			} );
+
+			it( "should return true when the attribute exists", function(){
+				var obj = new presidedataobjects.library.Object( objectName="some_object", attributes={ foo="bar", labelfield="label" } );
+
+				expect( obj.attributeExists( "labelfield" ) ).tobe( true );
+			} );
+
+		} );
+
 		describe( "getAttribute()", function(){
 
 			it( "should return an empty string when attribute does not exist and no default passed", function(){
@@ -42,18 +73,12 @@ component extends="testbox.system.BaseSpec"{
 			} );
 		} );
 
-		describe( "attributeExists()", function(){
+		describe( "listProperties", function(){
 
-			it( "should return false when the attribute does not exist", function(){
-				var obj = new presidedataobjects.library.Object( objectName="some_object" );
+			it( "should return an array of properties defined on the object", function(){
+				var obj = new presidedataobjects.library.Object( objectName="some_object", properties=[ { name="prop1", type="boolean" }, { name="prop2" }, { name="another_prop" } ] );
 
-				expect( obj.attributeExists( "nonexistant" ) ).tobe( false );
-			} );
-
-			it( "should return true when the attribute exists", function(){
-				var obj = new presidedataobjects.library.Object( objectName="some_object", attributes={ foo="bar", labelfield="label" } );
-
-				expect( obj.attributeExists( "labelfield" ) ).tobe( true );
+				expect( obj.listProperties() ).toBe( [ "prop1", "prop2", "another_prop" ] );
 			} );
 
 		} );
@@ -91,5 +116,6 @@ component extends="testbox.system.BaseSpec"{
 			} );
 
 		} );
+
 	}
 }

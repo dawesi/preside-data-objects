@@ -23,6 +23,10 @@ component {
 		return _getObjectName();
 	}
 
+	public array function listAttributes() {
+		return _getAttributes().keyArray();
+	}
+
 	public boolean function attributeExists( required string attributeName ) {
 		var attributes = _getAttributes();
 		return attributes.keyExists( arguments.attributeName );
@@ -32,6 +36,10 @@ component {
 		var attributes = _getAttributes();
 
 		return attributes[ arguments.attributeName ] ?: arguments.defaultValue;
+	}
+
+	public array function listProperties() {
+		return _getProperties().keyArray();
 	}
 
 	public boolean function propertyExists( required string propertyName ) {
