@@ -11,12 +11,12 @@ component {
 	}
 
 // MIXIN HELPERS
-	public void function $addFunction( required string name, required function func ) output=false {
+	public void function $addFunction( required string name, required function func ) {
 		this[ name ] = func;
 		variables[ name ] = func;
 	}
 
-	public void function $mixinFunctions( target, objMeta = getMetaData( this ) ) output=false {
+	public void function $mixinFunctions( target, objMeta = getMetaData( this ) ) {
 		if ( StructKeyExists( objMeta, "extends" ) ) {
 			this.$mixinFunctions( target, objMeta.extends );
 		}

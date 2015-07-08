@@ -92,7 +92,7 @@ component extends="presidedataobjects.util.Base" {
 		}
 	}
 
-	private array function _getPropertyNamesInOrder( required string pathToCfc ) output=false {
+	private array function _getPropertyNamesInOrder( required string pathToCfc ) {
 		var cfcContent      = FileRead( arguments.pathToCfc );
 		var propertyMatches = _reSearch( 'property\s+[^;/>]*name="([a-zA-Z_\$][a-zA-Z0-9_\$]*)"', cfcContent );
 
