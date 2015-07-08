@@ -89,7 +89,7 @@ component {
 	public struct function getProperty( required string propertyName ) {
 		var properties = _getProperties();
 
-		return properties[ arguments.propertyName ] ?: throw( type="presidedataobjects.object.propertynotfound" );
+		return properties[ arguments.propertyName ] ?: throw( type="presidedataobjects.object.propertynotfound", message="The property [#arguments.propertyName#] does not exist in the object [#getObjectName()#]" );
 	}
 
 
