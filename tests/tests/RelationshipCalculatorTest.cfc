@@ -19,6 +19,20 @@ component extends="testbox.system.BaseSpec"{
 				expect( calculator.calculateRelationships( objects={} ) ).toBe( {} );
 			} );
 
+			it( "should return an empty structure when no relationships exist between the objects", function(){
+				var simpleProps = { id={ name="id", type="string" }, label={ name="label", type="string" } };
+				var objects     = { object_a=getMockBox().createStub(), object_b=getMockBox().createStub() };
+
+				objects.object_a.$( "listProperties", [ "id", "label" ] );
+				objects.object_a.$( "getProperty" ).$args( propertyName="id" ).$results( simpleProps.id );
+				objects.object_a.$( "getProperty" ).$args( propertyName="label" ).$results( simpleProps.label );
+				objects.object_b.$( "listProperties", [ "id", "label" ] );
+				objects.object_b.$( "getProperty" ).$args( propertyName="id" ).$results( simpleProps.id );
+				objects.object_b.$( "getProperty" ).$args( propertyName="label" ).$results( simpleProps.label );
+
+				expect( calculator.calculateRelationships( objects=objects ) ).toBe( {} );
+			} );
+
 		} );
 	}
 
