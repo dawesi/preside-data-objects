@@ -33,6 +33,42 @@ component extends="testbox.system.BaseSpec"{
 				expect( properties.id ?: "" ).toBe( { name="id", type="numeric", dbtype="bigint", maxLength=0, generator="increment", required=true, pk=true, test=true } );
 			} );
 
+			it( "should add an datecreated property when it does not already exist", function(){
+				var properties = {};
+
+				injector.injectDefaultProperties( properties=properties );
+
+				expect( properties.datecreated ?: "" ).toBe( { name="datecreated", type="date", dbtype="datetime", required=true } );
+			} );
+
+			it( "should merge any default attributes of the id property when an id property already exists", function(){
+				var properties = {
+					datecreated = { name="datecreated", required=false, test=true }
+				};
+
+				injector.injectDefaultProperties( properties=properties );
+
+				expect( properties.datecreated ?: "" ).toBe( { name="datecreated", type="date", dbtype="datetime", required=false, test=true } );
+			} );
+
+			it( "should add an datemodified property when it does not already exist", function(){
+				var properties = {};
+
+				injector.injectDefaultProperties( properties=properties );
+
+				expect( properties.datemodified ?: "" ).toBe( { name="datemodified", type="date", dbtype="datetime", required=true } );
+			} );
+
+			it( "should merge any default attributes of the id property when an id property already exists", function(){
+				var properties = {
+					datemodified = { name="datemodified", required=false, test=true }
+				};
+
+				injector.injectDefaultProperties( properties=properties );
+
+				expect( properties.datemodified ?: "" ).toBe( { name="datemodified", type="date", dbtype="datetime", required=false, test=true } );
+			} );
+
 		} );
 	}
 

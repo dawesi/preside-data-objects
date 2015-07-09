@@ -16,7 +16,9 @@ component {
 	 */
 	public void function injectDefaultProperties( required struct properties ) {
 		var defaultProperties = {
-			id = { name="id", type="string", dbtype="varchar", maxLength=35, generator="UUID", required=true, pk=true }
+			  id           = { name="id"          , type="string", required=true, dbtype="varchar", maxLength=35, generator="UUID", pk=true }
+			, datecreated  = { name="datecreated" , type="date"  , required=true, dbtype="datetime" }
+			, datemodified = { name="datemodified", type="date"  , required=true, dbtype="datetime" }
 		};
 
 		for( var key in defaultProperties ){
