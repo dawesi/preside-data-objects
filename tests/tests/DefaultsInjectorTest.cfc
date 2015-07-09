@@ -193,6 +193,24 @@ component extends="testbox.system.BaseSpec"{
 				expect( prop.relatedViaTargetFk ?: "" ).toBe( "someobject" );
 			} );
 
+			it( "should add relatedTo=propname when property defines one-to-many relationship and no relatedTo attribute", function(){
+				var prop = { name="someobject", relationship="one-to-many", required=true  };
+
+				injector.injectDefaultPropertyAttributes( property=prop, objectName="testobject" );
+
+				expect( prop.type ?: "" ).toBe( "" );
+				expect( prop.relatedTo ?: "" ).toBe( "someobject" );
+			} );
+
+			it( "should add relationshipKey=objectname when property defines one-to-many relationship and no relationshipKey attribute", function(){
+				var prop = { name="someobject", relationship="one-to-many", required=true  };
+
+				injector.injectDefaultPropertyAttributes( property=prop, objectName="testobject" );
+
+				expect( prop.type ?: "" ).toBe( "" );
+				expect( prop.relationshipKey ?: "" ).toBe( "testobject" );
+			} );
+
 		} );
 
 		describe( "injectDefaultAttributes()", function(){

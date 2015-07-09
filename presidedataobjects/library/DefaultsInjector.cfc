@@ -89,16 +89,18 @@ component {
 	}
 
 	private void function _injectRelationshipPropertyAttributeDefaults( required string objectName, required struct property ) {
+		property.relatedTo = property.relatedTo ?: ( property.name ?: "" );
+
 		switch( property.relationship ?: "" ){
-			case "many-to-one":
-				property.relatedTo = property.relatedTo ?: ( property.name ?: "" );
-			break;
 			case "many-to-many":
-				property.relatedTo            = property.relatedTo            ?: ( property.name ?: "" );
 				property.relationshipIsSource = property.relationshipIsSource ?: true;
 				property.relatedViaSourceFk   = property.relatedViaSourceFk   ?: objectName;
 				property.relatedViaTargetFk   = property.relatedViaTargetFk   ?: property.relatedTo;
 				property.relatedVia           = property.relatedVia           ?: ( objectName < property.relatedTo ? "#objectName#__join__#property.relatedTo#" : "#property.relatedTo#__join__#objectName#" );
+			break;
+
+			case "one-to-many":
+				property.relationshipKey = property.relationshipKey ?: objectName;
 			break;
 		}
 	}
