@@ -12,7 +12,7 @@ component {
 		  required string objectName
 		, required any    framework
 		,          struct attributes={}
-		,          array properties=[]
+		,          array  properties=[]
 	) {
 		_setObjectName( arguments.objectName );
 		_setFramework( arguments.framework );
@@ -62,6 +62,14 @@ component {
 	}
 
 	/**
+	 * Returns the internal store of object attributes (struct)
+	 *
+	 */
+	public struct function getAttributes() {
+		return _getAttributes();
+	}
+
+	/**
 	 * Returns an array of the property names defined on the object
 	 *
 	 */
@@ -90,6 +98,14 @@ component {
 		var properties = _getProperties();
 
 		return properties[ arguments.propertyName ] ?: throw( type="presidedataobjects.object.propertynotfound", message="The property [#arguments.propertyName#] does not exist in the object [#getObjectName()#]" );
+	}
+
+	/**
+	 * Returns the internal structure of properties
+	 *
+	 */
+	public struct function getProperties() {
+		return _getProperties();
 	}
 
 

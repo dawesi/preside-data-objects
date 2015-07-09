@@ -22,10 +22,10 @@ component extends="testbox.system.BaseSpec"{
 
 				expect( compiledObject.getObjectName() ).toBe( objectName );
 				expect( compiledObject.testMethodsWorking() ).toBe( true );
-				expect( compiledObject.listAttributes() ).toBe( [ "datamanager", "labelfield" ] );
+				expect( compiledObject.listAttributes().sort( "textnocase") ).toBe( [ "datamanager", "labelfield", "tablename", "tableprefix" ] );
 				expect( compiledObject.getAttribute( "labelfield" ) ).toBe( "code" );
 				expect( compiledObject.getAttribute( "datamanager" ) ).toBe( true );
-				expect( compiledObject.listProperties() ).toBe( [ "label", "code" ] );
+				expect( compiledObject.listProperties().sort( "textnocase") ).toBe( [ "code", "datecreated", "datemodified", "id", "label" ] );
 				expect( compiledObject.getProperty( "label" ) ).toBe( { name="label", type="string", dbtype="varchar", maxlength=255, uniqueindexes="label", required=true } );
 
 				mockFramework.$( "selectData", QueryNew( 'test,this,stuff' ) );
@@ -41,9 +41,9 @@ component extends="testbox.system.BaseSpec"{
 				var compiledObject = compiler.compileDynamicObject( objectName=objectName, attributes=attributes, properties=properties );
 
 				expect( compiledObject.getObjectName() ).toBe( objectName );
-				expect( compiledObject.listAttributes() ).toBe( [ "datamanager", "dynamic", "labelfield" ] );
+				expect( compiledObject.listAttributes().sort( "textnocase" ) ).toBe( [ "datamanager", "dynamic", "labelfield", "tablename", "tableprefix" ] );
 				expect( compiledObject.getAttribute( "labelfield" ) ).toBe( "label" );
-				expect( compiledObject.listProperties() ).toBe( [ "label" ] );
+				expect( compiledObject.listProperties().sort( "textnocase" ) ).toBe( [ "datecreated", "datemodified", "id", "label" ] );
 				expect( compiledObject.getProperty( "label" ) ).toBe( properties[1] );
 
 				mockFramework.$( "selectData", QueryNew( 'test,this,stuff' ) );

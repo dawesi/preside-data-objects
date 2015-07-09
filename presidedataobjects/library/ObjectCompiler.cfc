@@ -11,6 +11,7 @@ component {
 		_setFramework( arguments.framework );
 		_setMetaReader( new ObjectMetaReader() );
 		_setObjectMerger( new ObjectMerger() );
+		_setDefaultsInjector( new DefaultsInjector() );
 
 		return this;
 	}
@@ -37,6 +38,8 @@ component {
 			_getObjectMerger().mergeObjects( targetObject=obj, objectToMerge=new "#objectPath#"() );
 		}
 
+		_injectDefaults( obj );
+
 		return obj;
 	}
 
@@ -51,12 +54,28 @@ component {
 	public Object function compileDynamicObject( required string objectName, required array properties, required struct attributes ) {
 		arguments.attributes.dynamic = true;
 
-		return new Object(
+		var obj = new Object(
 			  framework  = _getFramework()
 			, objectName = arguments.objectName
 			, attributes = arguments.attributes
 			, properties = arguments.properties
 		);
+		_injectDefaults( obj );
+
+		return obj;
+	}
+
+// PRIVATE HELPERS
+	private void function _injectDefaults( required Object obj ) {
+		var injector   = _getDefaultsInjector();
+		var properties = obj.getProperties();
+		var attributes = obj.getAttributes();
+
+		injector.injectDefaultAttributes( attributes=attributes, objectName=obj.getObjectName() );
+		injector.injectDefaultProperties( properties=properties, objectName=obj.getObjectName() );
+		for( var propertyName in properties ){
+			injector.injectDefaultPropertyAttributes( property=properties[ propertyName ], objectName=obj.getObjectName() );
+		}
 	}
 
 // GETTERS AND SETTERS
@@ -79,6 +98,13 @@ component {
 	}
 	private void function _setObjectMerger( required any objectMerger ) {
 		_objectMerger = arguments.objectMerger;
+	}
+
+	private any function _getDefaultsInjector() {
+		return _defaultsInjector;
+	}
+	private void function _setDefaultsInjector( required any defaultsInjector ) {
+		_defaultsInjector = arguments.defaultsInjector;
 	}
 
 }
