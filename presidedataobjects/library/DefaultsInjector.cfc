@@ -42,6 +42,16 @@ component {
 		}
 	}
 
+	/**
+	 * Method to inject various default attributes
+	 * into an objects attribute collection
+	 *
+	 */
+	public void function injectDefaultAttributes( required struct attributes, required string objectName ) {
+		attributes.tableName   = attributes.tableName   ?: objectName;
+		attributes.tablePrefix = attributes.tablePrefix ?: "pobj_";
+	}
+
 
 // PRIVATE HELPERS
 	private void function _injectDatabaseTypePropertyAttributeDefaults( required struct property ) {

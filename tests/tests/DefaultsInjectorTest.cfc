@@ -193,6 +193,41 @@ component extends="testbox.system.BaseSpec"{
 				expect( prop.relatedViaTargetFk ?: "" ).toBe( "someobject" );
 			} );
 
+		} );
+
+		describe( "injectDefaultAttributes()", function(){
+
+			it( "should inject tablePrefix=pobj_ when it does not already exist", function(){
+				var attribs = {};
+
+				injector.injectDefaultAttributes( attributes=attribs, objectName="testobject" );
+
+				expect( attribs.tablePrefix ?: "" ).toBe( "pobj_" );
+			} );
+
+			it( "should leave tablePrefix alone when already does exist", function(){
+				var attribs = { tableprefix="test_" };
+
+				injector.injectDefaultAttributes( attributes=attribs, objectName="testobject" );
+
+				expect( attribs.tablePrefix ?: "" ).toBe( "test_" );
+			} );
+
+			it( "should inject tableName=objectName when it does not already exist", function(){
+				var attribs = {};
+
+				injector.injectDefaultAttributes( attributes=attribs, objectName="testobject" );
+
+				expect( attribs.tableName ?: "" ).toBe( "testobject" );
+			} );
+
+			it( "should leave tableName alone when already does exist", function(){
+				var attribs = { tableName="test" };
+
+				injector.injectDefaultAttributes( attributes=attribs, objectName="testobject" );
+
+				expect( attribs.tableName ?: "" ).toBe( "test" );
+			} );
 
 		} );
 	}
