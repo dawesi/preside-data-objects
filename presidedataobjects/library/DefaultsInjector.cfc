@@ -27,4 +27,69 @@ component {
 		}
 	}
 
+	/**
+	 * Method to inject various default attributes
+	 * into properties dependent on other property attributes
+	 *
+	 */
+	public void function injectDefaultPropertyAttributes( required struct property, required string objectName ) {
+		var relationshipValues = [ "many-to-one", "many-to-many", "one-to-many" ];
+
+		if ( relationshipValues.findNoCase( property.relationship ?: "" ) ) {
+			_injectRelationshipPropertyAttributeDefaults( objectName=objectName, property=property  );
+		} else {
+			_injectDatabaseTypePropertyAttributeDefaults( property );
+		}
+	}
+
+
+// PRIVATE HELPERS
+	private void function _injectDatabaseTypePropertyAttributeDefaults( required struct property ) {
+		if ( ( property.type ?: "any" ) == "any" ) {
+			property.type = "string";
+		}
+
+		switch( property.type ) {
+			case "string":
+				property.dbtype = property.dbtype ?: "varchar";
+			break;
+
+			case "numeric":
+				property.dbtype = property.dbtype ?: "int";
+			break;
+
+			case "date":
+				property.dbtype = property.dbtype ?: "datetime";
+			break;
+
+			case "boolean":
+				property.dbtype = property.dbtype ?: "boolean";
+			break;
+
+			case "binary":
+				property.dbtype = property.dbtype ?: "blob";
+			break;
+		}
+
+		switch( property.dbtype ?: "" ) {
+			case "varchar":
+				property.maxlength = property.maxlength ?: 255;
+			break;
+		}
+	}
+
+	private void function _injectRelationshipPropertyAttributeDefaults( required string objectName, required struct property ) {
+		switch( property.relationship ?: "" ){
+			case "many-to-one":
+				property.relatedTo = property.relatedTo ?: ( property.name ?: "" );
+			break;
+			case "many-to-many":
+				property.relatedTo            = property.relatedTo            ?: ( property.name ?: "" );
+				property.relationshipIsSource = property.relationshipIsSource ?: true;
+				property.relatedViaSourceFk   = property.relatedViaSourceFk   ?: objectName;
+				property.relatedViaTargetFk   = property.relatedViaTargetFk   ?: property.relatedTo;
+				property.relatedVia           = property.relatedVia           ?: ( objectName < property.relatedTo ? "#objectName#__join__#property.relatedTo#" : "#property.relatedTo#__join__#objectName#" );
+			break;
+		}
+	}
 }
