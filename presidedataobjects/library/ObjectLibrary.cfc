@@ -52,6 +52,14 @@ component {
 		return objects[ arguments.objectName ] ?: throw( type="presidedataobjects.library.objectnotfound", message="The object [#arguments.objectName#] could not be found in the Preside Data Objects library.", detail="Existing objects are: #SerializeJson( objects.keyArray() )#" );
 	}
 
+	/**
+	 * Returns the internal structure of objects
+	 *
+	 */
+	public struct function getObjects() {
+		return _getObjects();
+	}
+
 // PRIVATE HELPERS
 	private void function _buildLibrary( required any framework, required array sourceDirectories ) {
 		var objects            = {};

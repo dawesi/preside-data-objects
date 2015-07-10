@@ -58,5 +58,16 @@ component extends="testbox.system.BaseSpec"{
 				} ).toThrow( "presidedataobjects.library.objectnotfound" );
 			} );
 		} );
+
+		describe( "getObjects()", function(){
+
+			it( "should return structure of objects with keys as object names and objects as values", function(){
+				var objects = library.getObjects();
+
+				expect( objects.object_a.getObjectName() ).toBe( "object_a" );
+				expect( objects.object_a.getAttribute( "dynamic", false ) ).toBe( false );
+			} );
+
+		} );
 	}
 }
