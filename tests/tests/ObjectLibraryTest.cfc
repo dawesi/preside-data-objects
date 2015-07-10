@@ -17,6 +17,7 @@ component extends="testbox.system.BaseSpec"{
 		var library = new presidedataobjects.library.ObjectLibrary( framework = mockFw, sourceDirectories=dirs );
 
 		describe( "listObjects()", function(){
+
 			it( "should return an array of object names found in the library including auto pivot objects", function(){
 				expect( library.listObjects().sort( "textnocase" ) ).toBe( [
 					  "object_a"
@@ -26,6 +27,35 @@ component extends="testbox.system.BaseSpec"{
 					, "object_c"
 					, "object_d"
 				] );
+			} );
+
+		} );
+
+		describe( "objectExists()", function(){
+
+			it( "should return false when the passed object does not exist", function(){
+				expect( library.objectExists( "meh" ) ).toBe( false );
+			} );
+
+			it( "should return true when the passed object does exist", function(){
+				expect( library.objectExists( "object_a__join__object_b" ) ).toBe( true );
+			} );
+
+		} );
+
+		describe( "getObject()", function(){
+
+			it( "should return the given object found by name", function(){
+				var obj = library.getObject( "object_b_ds" );
+
+				expect( obj.getObjectName() ).toBe( "object_b_ds" );
+				expect( obj.getAttribute( "dynamic" ) ).toBe( true );
+			} );
+
+			it( "should throw an informative error when the object does not exist", function(){
+				expect( function(){
+					library.getObject( "meh" );
+				} ).toThrow( "presidedataobjects.library.objectnotfound" );
 			} );
 		} );
 	}
