@@ -1,3 +1,7 @@
+/**
+ * Class for MySQL specific SQL formatting
+ *
+ */
 component {
 
 	public string function escapeEntity( required string entityName ) {
