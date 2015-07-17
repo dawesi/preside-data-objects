@@ -5,12 +5,12 @@
 component {
 
 // CONSTRUCTOR
-	public any function init() output=false {
+	public any function init() {
 		return this;
 	}
 
 // PUBLIC API METHODS
-	public query function getDatabaseVersion( required string dsn ) output=false {
+	public query function getDatabaseVersion( required string dsn ) {
 		var db = "";
 
 		dbinfo type="version" datasource=arguments.dsn name="db";
@@ -18,7 +18,7 @@ component {
 		return db;
 	}
 
-	public query function getTableInfo( required string tableName, required string dsn ) output=false {
+	public query function getTableInfo( required string tableName, required string dsn ) {
 		var table = "";
 
 		dbinfo type="tables" name="table" pattern="#arguments.tableName#" datasource="#arguments.dsn#";
@@ -26,7 +26,7 @@ component {
 		return table;
 	}
 
-	public query function getTableColumns( required string tableName, required string dsn ) output=false {
+	public query function getTableColumns( required string tableName, required string dsn ) {
 		var columns = "";
 
 		dbinfo type="columns" name="columns" table=arguments.tableName datasource=arguments.dsn;
@@ -34,7 +34,7 @@ component {
 		return columns;
 	}
 
-	public struct function getTableIndexes( required string tableName, required string dsn ) output=false {
+	public struct function getTableIndexes( required string tableName, required string dsn ) {
 		var indexes = "";
 		var index   = "";
 		var ixs     = {};
@@ -57,7 +57,7 @@ component {
 		return ixs;
 	}
 
-	public struct function getTableForeignKeys( required string tableName, required string dsn ) output=false {
+	public struct function getTableForeignKeys( required string tableName, required string dsn ) {
 		var keys        = "";
 		var key         = "";
 		var constraints = {};
