@@ -130,6 +130,22 @@ component extends="testbox.system.BaseSpec"{
 			} );
 		} );
 
+		describe( "getTableName()", function(){
+
+			it( "should return concatenated table prefix and tablename attributes", function(){
+				var obj = getObject( attributes={ tablename="some_object", tableprefix="ptest_" } );
+
+				expect( obj.getTableName() ).toBe( "ptest_some_object" );
+			} );
+
+			it( "should return default of pobj_(objectname) when no attributes for tablename and tableprefix explicitly set", function(){
+				var obj = getObject( objectName="thisistest" );
+
+				expect( obj.getTableName() ).toBe( "pobj_thisistest" );
+
+			} );
+		} );
+
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/

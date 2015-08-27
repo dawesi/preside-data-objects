@@ -30,6 +30,14 @@ component {
 	}
 
 	/**
+	 * Returns the corresponding database table name of the object
+	 *
+	 */
+	public string function getTableName() {
+		return getAttribute( "tablePrefix", "pobj_" ) & getAttribute( "tableName", getObjectName() );
+	}
+
+	/**
 	 * Returns an array of attribute names that are defined
 	 * on the object
 	 *
