@@ -9,52 +9,52 @@
  component {
 
 // CONSTRUCTOR
- 	public any function init(
- 		  required string dsn
+	public any function init(
+		  required string dsn
 		, required any    dbInfoService
 		, required any    adapterFactory
 		, required any    sqlRunner
 		,          string versionTableName = "_preside_generated_entity_versions"
- 	) {
- 		_setDsn( arguments.dsn );
- 		_setDbInfoService( arguments.dbInfoService );
- 		_setAdapterFactory( arguments.adapterFactory );
- 		_setSqlRunner( arguments.sqlRunner );
- 		_setVersionTableName( arguments.versionTableName );
+	) {
+		_setDsn( arguments.dsn );
+		_setDbInfoService( arguments.dbInfoService );
+		_setAdapterFactory( arguments.adapterFactory );
+		_setSqlRunner( arguments.sqlRunner );
+		_setVersionTableName( arguments.versionTableName );
 
- 		return this;
- 	}
+		return this;
+	}
 
 // PUBLIC API
- 	public boolean function versioningTableExists() {
- 		var tableInfo = _getDbInfoService().getTableInfo(
- 			  tableName = _getVersionTableName()
- 			, dsn       = _getDsn()
- 		);
+	public boolean function versioningTableExists() {
+		var tableInfo = _getDbInfoService().getTableInfo(
+			  tableName = _getVersionTableName()
+			, dsn       = _getDsn()
+		);
 
- 		return tableInfo.recordCount > 0;
- 	}
+		return tableInfo.recordCount > 0;
+	}
 
- 	public any function createVersioningTable() {
- 		if ( !versioningTableExists() ) {
- 			var sqlStatements = getCreateVersioningTableSql();
- 			var runner        = _getSqlRunner();
- 			var dsn           = _getDsn();
+	public any function createVersioningTable() {
+		if ( !versioningTableExists() ) {
+			var sqlStatements = getCreateVersioningTableSql();
+			var runner        = _getSqlRunner();
+			var dsn           = _getDsn();
 
- 			for( var sqlStatement in sqlStatements ) {
-	 			runner.runSql( sql=sqlStatement, dsn=dsn );
- 			}
- 		}
- 	}
+			for( var sqlStatement in sqlStatements ) {
+				runner.runSql( sql=sqlStatement, dsn=dsn );
+			}
+		}
+	}
 
- 	/**
- 	 * Returns an array of SQL statements that can be used
- 	 * to create the schema versioning table
- 	 *
- 	 */
- 	public array function getCreateVersioningTableSql() {
- 		var adapter = _getAdapter();
- 		var tableSql = "";
+	/**
+	 * Returns an array of SQL statements that can be used
+	 * to create the schema versioning table
+	 *
+	 */
+	public array function getCreateVersioningTableSql() {
+		var adapter = _getAdapter();
+		var tableSql = "";
 
 		var columnDefs = adapter.getColumnDefinitionSql(
 			  columnName = "entity_type"
@@ -99,7 +99,7 @@
 		);
 
 		return [ tableSql, indexSql ];
- 	}
+	}
 
 // PRIVATE HELPERS
 	private any function _getAdapter() {
