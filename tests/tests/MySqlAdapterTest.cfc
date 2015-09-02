@@ -572,5 +572,11 @@ component extends="testbox.system.BaseSpec"{
 			} );
 
 		} );
+
+		describe( "getCurrentDateSql()", function(){
+			it( "should return Now()", function(){
+				expect( adapter.getCurrentDateSql() ).toBe( "Now()" );
+			} );
+		} );
 	}
 }

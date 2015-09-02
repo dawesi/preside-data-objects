@@ -179,6 +179,29 @@ component extends="testbox.system.BaseSpec"{
 				) ).toBe( true );
 			} );
 		} );
+
+		describe( "getSaveVersionSql", function(){
+			it( "should return insert sql when version record does not already exist", function(){
+				var schemaVersioningService = _getVersioningService();
+				var versionHash             = CreateUUId();
+				var entitytype              = CreateUUId();
+				var entityName              = CreateUUId();
+				var parentEntityName        = CreateUUId();
+				var currentDate             = CreateUUId();
+				var expectedSql             = "insert into #versionTableName# ( entity_type, entity_name, parent_entity_name, version_hash, date_modified ) values ( '#entityType#', '#entityName#', '#parentEntityName#', '#versionHash#', #currentDate# )";
+
+				mockSqlAdapter.$( "getCurrentDateSql", currentDate );
+				schemaVersioningService.$( "versionExists" ).$args( entityType=entityType, entityName=entityName, parentEntityName=parentEntityName ).$results( false );
+
+				expect( schemaVersioningService.getSaveVersionSql(
+					  entityType       = entityType
+					, entityName       = entityName
+					, parentEntityName = parentEntityName
+					, versionHash      = versionHash
+				) ).toBe( expectedSql );
+
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/

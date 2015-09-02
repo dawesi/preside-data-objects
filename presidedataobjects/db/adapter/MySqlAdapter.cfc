@@ -371,6 +371,10 @@ component {
 		return sql;
 	}
 
+	public string function getCurrentDateSql() {
+		return "Now()";
+	}
+
 	public numeric function getTableNameMaxLength() {
 		return 64;
 	}

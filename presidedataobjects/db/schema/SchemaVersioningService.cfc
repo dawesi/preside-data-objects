@@ -121,6 +121,23 @@
 		return queryResult.recordCount > 0;
 	}
 
+	public string function getSaveVersionSql(
+		  required string entityType
+		, required string entityName
+		, required string versionHash
+		,          string parentEntityName = ""
+	) {
+		var todaySql = _getAdapter().getCurrentDateSql();
+
+		if ( versionExists( entityType=arguments.entityType, entityName=arguments.entityName, parentEntityName=arguments.parentEntityName ) ) {
+		} else {
+			return "insert into #_getVersionTableName()# ( entity_type, entity_name, parent_entity_name, version_hash, date_modified ) values ( '#arguments.entityType#', '#arguments.entityName#', '#arguments.parentEntityName#', '#arguments.versionHash#', #todaySql# )"
+
+		}
+
+		return "";
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
