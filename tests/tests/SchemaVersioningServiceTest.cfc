@@ -96,6 +96,89 @@ component extends="testbox.system.BaseSpec"{
 				}
 			} );
 		} );
+
+		describe( "versionExists", function(){
+			it( "should return false if a db record does not exist for the given entity type, entity name and parent entity name", function(){
+				var schemaVersioningService = _getVersioningService();
+				var filterSql               = "entity_type = :entity_type and entity_name = :entity_name and parent_entity_name = :parent_entity_name";
+				var dummySql                = "some dummy sql" & CreateUUId();
+				var entityType              = "entityType" & CreateUUId();
+				var entityName              = "entityName" & CreateUUId();
+				var parentEntityName        = "parentEntityName" & CreateUUId();
+				var filterParams            = [
+					  { name="entity_type"       , cfsqltype="varchar", value=entityType       }
+					, { name="entity_name"       , cfsqltype="varchar", value=entityName       }
+					, { name="parent_entity_name", cfsqltype="varchar", value=parentEntityName }
+				];
+
+				mockSqlAdapter.$( "getSelectSql" ).$args(
+					  tableName     = versionTableName
+					, selectColumns = [ "1" ]
+					, filter        = filterSql
+				).$results( dummySql );
+
+				mockSqlRunner.$( "runSql" ).$args( sql=dummySql, dsn=mockDsn, params=filterParams ).$results( QueryNew( '' ) );
+
+				expect( schemaVersioningService.versionExists(
+					  entityType       = entityType
+					, entityName       = entityName
+					, parentEntityName = parentEntityName
+				) ).toBe( false );
+			} );
+
+			it( "should return true if a db record exists for the given entity type, entity name and parent entity name", function(){
+				var schemaVersioningService = _getVersioningService();
+				var filterSql               = "entity_type = :entity_type and entity_name = :entity_name and parent_entity_name = :parent_entity_name";
+				var dummySql                = "some dummy sql" & CreateUUId();
+				var entityType              = "entityType" & CreateUUId();
+				var entityName              = "entityName" & CreateUUId();
+				var parentEntityName        = "parentEntityName" & CreateUUId();
+				var filterParams            = [
+					  { name="entity_type"       , cfsqltype="varchar", value=entityType       }
+					, { name="entity_name"       , cfsqltype="varchar", value=entityName       }
+					, { name="parent_entity_name", cfsqltype="varchar", value=parentEntityName }
+				];
+
+				mockSqlAdapter.$( "getSelectSql" ).$args(
+					  tableName     = versionTableName
+					, selectColumns = [ "1" ]
+					, filter        = filterSql
+				).$results( dummySql );
+
+				mockSqlRunner.$( "runSql" ).$args( sql=dummySql, dsn=mockDsn, params=filterParams ).$results( QueryNew( 'a', 'int', [[1]] ) );
+
+				expect( schemaVersioningService.versionExists(
+					  entityType       = entityType
+					, entityName       = entityName
+					, parentEntityName = parentEntityName
+				) ).toBe( true );
+			} );
+
+			it( "should check for NULL valued parent entity names when no parent entity name passed", function(){
+				var schemaVersioningService = _getVersioningService();
+				var filterSql               = "entity_type = :entity_type and entity_name = :entity_name and parent_entity_name is null";
+				var dummySql                = "some dummy sql" & CreateUUId();
+				var entityType              = "entityType" & CreateUUId();
+				var entityName              = "entityName" & CreateUUId();
+				var filterParams            = [
+					  { name="entity_type"       , cfsqltype="varchar", value=entityType       }
+					, { name="entity_name"       , cfsqltype="varchar", value=entityName       }
+				];
+
+				mockSqlAdapter.$( "getSelectSql" ).$args(
+					  tableName     = versionTableName
+					, selectColumns = [ "1" ]
+					, filter        = filterSql
+				).$results( dummySql );
+
+				mockSqlRunner.$( "runSql" ).$args( sql=dummySql, dsn=mockDsn, params=filterParams ).$results( QueryNew( 'a', 'int', [[1]] ) );
+
+				expect( schemaVersioningService.versionExists(
+					  entityType       = entityType
+					, entityName       = entityName
+				) ).toBe( true );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
