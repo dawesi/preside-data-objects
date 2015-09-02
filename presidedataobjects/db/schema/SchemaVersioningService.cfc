@@ -106,6 +106,31 @@
 		, required string entityName
 		,          string parentEntityName = ""
 	) {
+		var filter = _getVersionFilter( argumentCollection=arguments );
+		var selectSql = _getAdapter().getSelectSql(
+			  tableName     = _getVersionTableName()
+			, selectColumns = [ "1" ]
+			, filter        = filter.sql
+		);
+		var queryResult = _getSqlRunner().runSql(
+			  sql    = selectSql
+			, dsn    = _getDsn()
+			, params = filter.params
+		);
+
+		return queryResult.recordCount > 0;
+	}
+
+// PRIVATE HELPERS
+	private any function _getAdapter() {
+		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
+	}
+
+	private struct function _getVersionFilter(
+		  required string entityType
+		, required string entityName
+		, required string parentEntityName
+	) {
 		var filterSql = "entity_type = :entity_type and entity_name = :entity_name and parent_entity_name ";
 		var filterParams = [
 			  { name="entity_type"       , cfsqltype="varchar", value=arguments.entityType       }
@@ -119,24 +144,10 @@
 			filterSql &= "is null";
 		}
 
-		var selectSql = _getAdapter().getSelectSql(
-			  tableName     = _getVersionTableName()
-			, selectColumns = [ "1" ]
-			, filter        = filterSql
-		);
-
-		var queryResult = _getSqlRunner().runSql(
-			  sql    = selectSql
-			, dsn    = _getDsn()
+		return {
+			  sql    = filterSql
 			, params = filterParams
-		);
-
-		return queryResult.recordCount > 0;
-	}
-
-// PRIVATE HELPERS
-	private any function _getAdapter() {
-		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
+		};
 	}
 
 // GETTERS AND SETTERS
