@@ -201,6 +201,25 @@ component extends="testbox.system.BaseSpec"{
 				) ).toBe( expectedSql );
 
 			} );
+
+			it( "should return insert sql with NULL parent entity value when no parent entity passed", function(){
+				var schemaVersioningService = _getVersioningService();
+				var versionHash             = CreateUUId();
+				var entitytype              = CreateUUId();
+				var entityName              = CreateUUId();
+				var currentDate             = CreateUUId();
+				var expectedSql             = "insert into #versionTableName# ( entity_type, entity_name, parent_entity_name, version_hash, date_modified ) values ( '#entityType#', '#entityName#', null, '#versionHash#', #currentDate# )";
+
+				mockSqlAdapter.$( "getCurrentDateSql", currentDate );
+				schemaVersioningService.$( "versionExists" ).$args( entityType=entityType, entityName=entityName, parentEntityName="" ).$results( false );
+
+				expect( schemaVersioningService.getSaveVersionSql(
+					  entityType       = entityType
+					, entityName       = entityName
+					, versionHash      = versionHash
+				) ).toBe( expectedSql );
+
+			} );
 		} );
 	}
 

@@ -131,7 +131,8 @@
 
 		if ( versionExists( entityType=arguments.entityType, entityName=arguments.entityName, parentEntityName=arguments.parentEntityName ) ) {
 		} else {
-			return "insert into #_getVersionTableName()# ( entity_type, entity_name, parent_entity_name, version_hash, date_modified ) values ( '#arguments.entityType#', '#arguments.entityName#', '#arguments.parentEntityName#', '#arguments.versionHash#', #todaySql# )"
+			var parentEntityValue = arguments.parentEntityName.len() ? "'#arguments.parentEntityName#'" : 'null';
+			return "insert into #_getVersionTableName()# ( entity_type, entity_name, parent_entity_name, version_hash, date_modified ) values ( '#arguments.entityType#', '#arguments.entityName#', #parentEntityValue#, '#arguments.versionHash#', #todaySql# )"
 
 		}
 
