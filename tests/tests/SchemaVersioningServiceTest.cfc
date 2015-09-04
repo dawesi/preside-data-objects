@@ -294,14 +294,27 @@ component extends="testbox.system.BaseSpec"{
 				} );
 			} );
 		} );
+
+		describe( "getFieldVersionHash", function(){
+			it( "it should return an MD5 hash of the create sql for a given field's data structure", function(){
+				var schemaVersioningService = _getVersioningService();
+				var field                   = { test=CreateUUId() };
+				var createSql               = CreateUUId();
+
+				mockSchemaGenerator.$( "generateFieldDefinitionSql" ).$args( argumentCollection=field ).$results( createSql );
+
+				expect( schemaVersioningService.getFieldVersionHash( field=field ) ).toBe( Hash( createSql ) );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
 	private function _getVersioningService() {
-		variables.mockDbInfoService  = getMockBox().createEmptyMock( "presidedataobjects.db.DbInfoService" );
-		variables.mockSqlAdapter     = getMockBox().createStub();
-		variables.mockAdapterFactory = getMockBox().createEmptyMock( "presidedataobjects.db.adapter.AdapterFactory" );
-		variables.mockSqlRunner      = getMockBox().createEmptyMock( "presidedataobjects.db.SqlRunner" );
+		variables.mockDbInfoService   = getMockBox().createEmptyMock( "presidedataobjects.db.DbInfoService" );
+		variables.mockSqlAdapter      = getMockBox().createStub();
+		variables.mockAdapterFactory  = getMockBox().createEmptyMock( "presidedataobjects.db.adapter.AdapterFactory" );
+		variables.mockSqlRunner       = getMockBox().createEmptyMock( "presidedataobjects.db.SqlRunner" );
+		variables.mockSchemaGenerator = getMockBox().createStub();
 
 		variables.mockAdapterFactory.$( "getAdapter" ).$args( dsn=mockDsn ).$results( mockSqlAdapter );
 
@@ -312,6 +325,7 @@ component extends="testbox.system.BaseSpec"{
 				, versionTableName = versionTableName
 				, adapterFactory   = mockAdapterFactory
 				, sqlRunner        = mockSqlRunner
+				, schemaGenerator  = mockSchemaGenerator
 			)
 		);
 	}

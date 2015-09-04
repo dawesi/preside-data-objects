@@ -154,6 +154,10 @@
 		);
 	}
 
+	public string function getFieldVersionHash( required struct field ) {
+		return "";
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
