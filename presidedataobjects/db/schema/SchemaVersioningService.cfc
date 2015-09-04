@@ -130,6 +130,9 @@
 		var todaySql = _getAdapter().getCurrentDateSql();
 
 		if ( versionExists( entityType=arguments.entityType, entityName=arguments.entityName, parentEntityName=arguments.parentEntityName ) ) {
+			var clauseSql = _getVersionFilter( argumentCollection=arguments, parametizedValues=false ).sql;
+
+			return "update #_getVersionTableName()# set version_hash = '#arguments.versionHash#', date_modified = #todaySql# where #clauseSql#";
 		} else {
 			var parentEntityValue = arguments.parentEntityName.len() ? "'#arguments.parentEntityName#'" : 'null';
 			return "insert into #_getVersionTableName()# ( entity_type, entity_name, parent_entity_name, version_hash, date_modified ) values ( '#arguments.entityType#', '#arguments.entityName#', #parentEntityValue#, '#arguments.versionHash#', #todaySql# )"
@@ -145,19 +148,31 @@
 	}
 
 	private struct function _getVersionFilter(
-		  required string entityType
-		, required string entityName
-		, required string parentEntityName
+		  required string  entityType
+		, required string  entityName
+		, required string  parentEntityName
+		,          boolean parametizedValues = true
 	) {
-		var filterSql = "entity_type = :entity_type and entity_name = :entity_name and parent_entity_name ";
-		var filterParams = [
-			  { name="entity_type"       , cfsqltype="varchar", value=arguments.entityType       }
-			, { name="entity_name"       , cfsqltype="varchar", value=arguments.entityName       }
-		];
+		var filterSql    = "";
+		var filterParams = {};
+
+		if ( arguments.parametizedValues ) {
+			filterSql = "entity_type = :entity_type and entity_name = :entity_name and parent_entity_name ";
+			filterParams = [
+				  { name="entity_type"       , cfsqltype="varchar", value=arguments.entityType       }
+				, { name="entity_name"       , cfsqltype="varchar", value=arguments.entityName       }
+			];
+		} else {
+			filterSql = "entity_type = '#arguments.entityType#' and entity_name = '#arguments.entityName#' and parent_entity_name ";
+		}
 
 		if ( arguments.parentEntityName.len() ) {
-			filterSql &= "= :parent_entity_name";
-			filterParams.append( { name="parent_entity_name", cfsqltype="varchar", value=arguments.parentEntityName } );
+			if ( arguments.parametizedValues ) {
+				filterSql &= "= :parent_entity_name";
+				filterParams.append( { name="parent_entity_name", cfsqltype="varchar", value=arguments.parentEntityName } );
+			} else {
+				filterSql &= "= '#arguments.parentEntityName#'";
+			}
 		} else {
 			filterSql &= "is null";
 		}

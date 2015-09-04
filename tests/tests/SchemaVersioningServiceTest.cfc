@@ -220,6 +220,44 @@ component extends="testbox.system.BaseSpec"{
 				) ).toBe( expectedSql );
 
 			} );
+
+			it( "should return update sql when version record already exists", function(){
+				var schemaVersioningService = _getVersioningService();
+				var versionHash             = CreateUUId();
+				var entitytype              = CreateUUId();
+				var entityName              = CreateUUId();
+				var parentEntityName        = CreateUUId();
+				var currentDate             = CreateUUId();
+				var expectedSql             = "update #versionTableName# set version_hash = '#versionHash#', date_modified = #currentDate# where entity_type = '#entityType#' and entity_name = '#entityName#' and parent_entity_name = '#parentEntityName#'";
+
+				mockSqlAdapter.$( "getCurrentDateSql", currentDate );
+				schemaVersioningService.$( "versionExists" ).$args( entityType=entityType, entityName=entityName, parentEntityName=parentEntityName ).$results( true );
+
+				expect( schemaVersioningService.getSaveVersionSql(
+					  entityType       = entityType
+					, entityName       = entityName
+					, parentEntityName = parentEntityName
+					, versionHash      = versionHash
+				) ).toBe( expectedSql );
+			} );
+
+			it( "should return update sql with null parent entity clause when version record already exists and no parent entity passed", function(){
+				var schemaVersioningService = _getVersioningService();
+				var versionHash             = CreateUUId();
+				var entitytype              = CreateUUId();
+				var entityName              = CreateUUId();
+				var currentDate             = CreateUUId();
+				var expectedSql             = "update #versionTableName# set version_hash = '#versionHash#', date_modified = #currentDate# where entity_type = '#entityType#' and entity_name = '#entityName#' and parent_entity_name is null";
+
+				mockSqlAdapter.$( "getCurrentDateSql", currentDate );
+				schemaVersioningService.$( "versionExists" ).$args( entityType=entityType, entityName=entityName, parentEntityName="" ).$results( true );
+
+				expect( schemaVersioningService.getSaveVersionSql(
+					  entityType       = entityType
+					, entityName       = entityName
+					, versionHash      = versionHash
+				) ).toBe( expectedSql );
+			} );
 		} );
 	}
 
