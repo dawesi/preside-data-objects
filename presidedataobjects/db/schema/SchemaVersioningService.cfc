@@ -142,6 +142,18 @@
 		return "";
 	}
 
+	public void function saveVersion(
+		  required string entityType
+		, required string entityName
+		, required string versionHash
+		,          string parentEntityName = ""
+	) {
+		_getSqlRunner().runSql(
+			  sql = getSaveVersionSql( argumentCollection=arguments )
+			, dsn = _getDsn()
+		);
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );

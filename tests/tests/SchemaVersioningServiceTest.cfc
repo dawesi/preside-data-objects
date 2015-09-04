@@ -259,6 +259,41 @@ component extends="testbox.system.BaseSpec"{
 				) ).toBe( expectedSql );
 			} );
 		} );
+
+		describe( "saveVersion", function(){
+			it( "should run whatever sql is returned by getSaveVersionSql() against the configured datasource", function(){
+				var schemaVersioningService = _getVersioningService();
+				var versionHash             = CreateUUId();
+				var entitytype              = CreateUUId();
+				var entityName              = CreateUUId();
+				var parentEntityName        = CreateUUId();
+				var dummySql                = CreateUUId();
+
+				mockSqlRunner.$( "runSql" );
+				schemaVersioningService.$( "getSaveVersionSql" ).$args(
+					  versionHash      = versionHash
+					, entitytype       = entitytype
+					, entityName       = entityName
+					, parentEntityName = parentEntityName
+				).$results( dummySql );
+
+
+				schemaVersioningService.saveVersion(
+					  versionHash      = versionHash
+					, entitytype       = entitytype
+					, entityName       = entityName
+					, parentEntityName = parentEntityName
+				);
+
+				var callLog = mockSqlRunner.$callLog().runSql;
+
+				expect( callLog.len() ).toBe( 1 );
+				expect( callLog[1] ).toBe( {
+					  sql = dummySql
+					, dsn = mockDsn
+				} );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
