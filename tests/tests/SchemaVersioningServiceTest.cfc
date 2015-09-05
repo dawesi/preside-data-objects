@@ -296,14 +296,12 @@ component extends="testbox.system.BaseSpec"{
 		} );
 
 		describe( "getFieldVersionHash", function(){
-			it( "it should return an MD5 hash of the create sql for a given field's data structure", function(){
+			it( "it should return an MD5 hash of the field", function(){
 				var schemaVersioningService = _getVersioningService();
-				var field                   = { test=CreateUUId() };
-				var createSql               = CreateUUId();
+				var field                   = { test=CreateUUId(), blah="test" };
+				var hashed                  = Hash( SerializeJson( field ) );
 
-				mockSchemaGenerator.$( "generateFieldDefinitionSql" ).$args( argumentCollection=field ).$results( createSql );
-
-				expect( schemaVersioningService.getFieldVersionHash( field=field ) ).toBe( Hash( createSql ) );
+				expect( schemaVersioningService.getFieldVersionHash( field=field ) ).toBe( hashed );
 			} );
 		} );
 	}

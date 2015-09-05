@@ -155,7 +155,7 @@
 	}
 
 	public string function getFieldVersionHash( required struct field ) {
-		return "";
+		return Hash( SerializeJson( arguments.field ) );
 	}
 
 // PRIVATE HELPERS
