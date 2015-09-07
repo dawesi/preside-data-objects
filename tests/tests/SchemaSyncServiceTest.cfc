@@ -13,8 +13,16 @@ component extends="testbox.system.BaseSpec"{
 
 	function run(){
 		describe( "syncSchema", function(){
-			it( "should do magic", function(){
+			it( "should do nothing when the version in the database has not changed", function(){
 				var syncService = _getSyncService();
+				var mockLibrary = getMockBox().createEmptyMock( "presidedataobjects.library.ObjectLibrary" );
+
+				mockVersioningService.$( "hasDbVersionChanged" ).$args( objectLibrary=mockLibrary ).$results( false );
+				mockSqlRunner.$( "runSql" );
+
+				syncService.syncSchema( objectLibrary=mockLibrary );
+
+				expect( mockSqlRunner.$callLog().runSql.len() ).toBe( 0 );
 			} );
 		} );
 	}
@@ -30,6 +38,8 @@ component extends="testbox.system.BaseSpec"{
 		variables.mockSchemaGenerator   = getMockBox().createStub();
 		variables.mockTableFieldsHelper = getMockBox().createEmptyMock( "presidedataobjects.db.helpers.ObjectTableFieldsHelper" );
 		variables.mockAdapterFactory.$( "getAdapter" ).$args( dsn=mockDsn ).$results( mockSqlAdapter );
+
+
 
 		return getMockBox().createMock(
 			object = new presidedataobjects.db.schema.SchemaSyncService(
