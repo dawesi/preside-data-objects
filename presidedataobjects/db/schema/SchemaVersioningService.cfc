@@ -14,12 +14,14 @@
 		, required any    dbInfoService
 		, required any    adapterFactory
 		, required any    sqlRunner
+		, required any    objectTableFieldsHelper
 		,          string versionTableName = "_preside_generated_entity_versions"
 	) {
 		_setDsn( arguments.dsn );
 		_setDbInfoService( arguments.dbInfoService );
 		_setAdapterFactory( arguments.adapterFactory );
 		_setSqlRunner( arguments.sqlRunner );
+		_setObjectTableFieldsHelper( arguments.objectTableFieldsHelper );
 		_setVersionTableName( arguments.versionTableName );
 
 		return this;
@@ -158,6 +160,17 @@
 		return Hash( SerializeJson( arguments.field ) );
 	}
 
+	public string function getObjectVersionHash( required any object ) {
+		var dbFields    = _getObjectTableFieldsHelper().listTableFields( object=arguments.object );
+		var versionHash = "";
+
+		for( var fieldName in dbFields ) {
+			versionHash &= getFieldVersionHash( field=arguments.object.getProperty( propertyName=fieldName ) );
+		}
+
+		return Hash( versionHash );
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
@@ -226,6 +239,13 @@
 	}
 	private void function _setSqlRunner( required any sqlRunner ) {
 		_sqlRunner = arguments.sqlRunner;
+	}
+
+	private any function _getObjectTableFieldsHelper() {
+		return _objectTableFieldsHelper;
+	}
+	private void function _setObjectTableFieldsHelper( required any objectTableFieldsHelper ) {
+		_objectTableFieldsHelper = arguments.objectTableFieldsHelper;
 	}
 
 	private string function _getVersionTableName() {

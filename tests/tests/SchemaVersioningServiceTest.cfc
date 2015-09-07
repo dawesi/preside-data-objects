@@ -304,26 +304,55 @@ component extends="testbox.system.BaseSpec"{
 				expect( schemaVersioningService.getFieldVersionHash( field=field ) ).toBe( hashed );
 			} );
 		} );
+
+		describe( "getObjectVersionHash", function(){
+			it( "should generate a version hash based on all of its database field version hashes", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObj                 = getMockBox().createStub();
+				var mockFields              = StructNew( 'linked' );
+				var expected                = "";
+
+				mockFields.field1 = { versionHash=CreateUUId(), field={ test=CreateUUId() } };
+				mockFields.field2 = { versionHash=CreateUUId(), field={ test=CreateUUId() } };
+				mockFields.field3 = { versionHash=CreateUUId(), field={ test=CreateUUId() } };
+
+
+				for( var fieldName in mockFields ) {
+					mockObj.$( "getProperty" ).$args( propertyName=fieldName ).$results( mockFields[ fieldName ].field );
+					schemaVersioningService.$( "getFieldVersionHash" ).$args( field=mockFields[ fieldName ].field ).$results( mockFields[ fieldName ].versionHash );
+					expected &= mockFields[ fieldName ].versionHash;
+				}
+				mockTableFieldsHelper.$( "listTableFields" ).$args( object=mockObj ).$results( mockFields.keyArray() );
+
+				expected = Hash( expected );
+
+				var versionHash = schemaVersioningService.getObjectVersionHash( object=mockObj );
+
+				expect( versionHash ).toBe( expected );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
 	private function _getVersioningService() {
-		variables.mockDbInfoService   = getMockBox().createEmptyMock( "presidedataobjects.db.DbInfoService" );
-		variables.mockSqlAdapter      = getMockBox().createStub();
-		variables.mockAdapterFactory  = getMockBox().createEmptyMock( "presidedataobjects.db.adapter.AdapterFactory" );
-		variables.mockSqlRunner       = getMockBox().createEmptyMock( "presidedataobjects.db.SqlRunner" );
-		variables.mockSchemaGenerator = getMockBox().createStub();
+		variables.mockDbInfoService     = getMockBox().createEmptyMock( "presidedataobjects.db.DbInfoService" );
+		variables.mockSqlAdapter        = getMockBox().createStub();
+		variables.mockAdapterFactory    = getMockBox().createEmptyMock( "presidedataobjects.db.adapter.AdapterFactory" );
+		variables.mockSqlRunner         = getMockBox().createEmptyMock( "presidedataobjects.db.SqlRunner" );
+		variables.mockSchemaGenerator   = getMockBox().createStub();
+		variables.mockTableFieldsHelper = getMockBox().createEmptyMock( "presidedataobjects.db.helpers.ObjectTableFieldsHelper" );
 
 		variables.mockAdapterFactory.$( "getAdapter" ).$args( dsn=mockDsn ).$results( mockSqlAdapter );
 
 		return getMockBox().createMock(
 			object = new presidedataobjects.db.schema.SchemaVersioningService(
-				  dsn              = mockdsn
-				, dbInfoService    = mockDbInfoService
-				, versionTableName = versionTableName
-				, adapterFactory   = mockAdapterFactory
-				, sqlRunner        = mockSqlRunner
-				, schemaGenerator  = mockSchemaGenerator
+				  dsn                     = mockdsn
+				, dbInfoService           = mockDbInfoService
+				, versionTableName        = versionTableName
+				, adapterFactory          = mockAdapterFactory
+				, sqlRunner               = mockSqlRunner
+				, schemaGenerator         = mockSchemaGenerator
+				, objectTableFieldsHelper = mockTableFieldsHelper
 			)
 		);
 	}
