@@ -394,6 +394,55 @@ component extends="testbox.system.BaseSpec"{
 
 			} );
 		} );
+
+
+		describe( "hasObjectVersionChanged", function(){
+			it( "should return true when the version hash of the object does not match the version saved in the database", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObject              = getMockBox().createStub();
+				var mockHash                = Hash( CreateUUId() );
+				var mockTablename           = CreateUUId();
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'table' and entity_name = '#mockTablename#' and parent_entity_name is null";
+
+				mockObject.id = CreateUUId();
+				mockObject.$( "getTablename", mockTablename );
+				schemaVersioningService.$( "getObjectVersionHash" ).$args( object=mockObject ).$results( mockHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "version_hash", "varchar", [ [ Hash( CreateUUId() ) ] ] ) );
+
+				expect( schemaVersioningService.hasObjectVersionChanged( object=mockObject ) ).toBe( true );
+
+			} );
+
+			it( "should return false when the version hash of the object matches the version saved in the database", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObject              = getMockBox().createStub();
+				var mockHash                = Hash( CreateUUId() );
+				var mockTablename           = CreateUUId();
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'table' and entity_name = '#mockTablename#' and parent_entity_name is null";
+
+				mockObject.$( "getTablename", mockTablename );
+				schemaVersioningService.$( "getObjectVersionHash", mockhash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "version_hash", "varchar", [ [ mockHash ] ] ) );
+
+				expect( schemaVersioningService.hasObjectVersionChanged( object=mockObject ) ).toBe( false );
+
+			} );
+
+			it( "should return true when no version saved in the databse", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObject              = getMockBox().createStub();
+				var mockHash                = Hash( CreateUUId() );
+				var mockTablename           = CreateUUId();
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'table' and entity_name = '#mockTablename#' and parent_entity_name is null";
+
+				mockObject.$( "getTablename", mockTablename );
+				schemaVersioningService.$( "getObjectVersionHash", mockhash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "" ) );
+
+				expect( schemaVersioningService.hasObjectVersionChanged( object=mockObject ) ).toBe( true );
+
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/

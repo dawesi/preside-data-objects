@@ -192,6 +192,15 @@
 		return !versionInDb.recordCount || versionInDb.version_hash != getDatabaseVersionHash( objectLibrary = arguments.objectLibrary );
 	}
 
+	public boolean function hasObjectVersionChanged( required any object ) {
+		var versionInDb   = _getSqlRunner().runSql(
+			  dsn = _getDsn()
+			, sql = "select version_hash from #_getVersionTableName()# where #_getVersionFilter( entityType='table', entityName=arguments.object.getTableName(), parametizedValues=false ).sql#"
+		);
+
+		return !versionInDb.recordCount || versionInDb.version_hash != getObjectVersionHash( object = arguments.object );
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
