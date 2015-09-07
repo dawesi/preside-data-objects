@@ -201,6 +201,14 @@
 		return !versionInDb.recordCount || versionInDb.version_hash != getObjectVersionHash( object = arguments.object );
 	}
 
+	public boolean function hasFieldVersionChanged( required struct field, required any object ) {
+		var versionInDb   = _getSqlRunner().runSql(
+			  dsn = _getDsn()
+			, sql = "select version_hash from #_getVersionTableName()# where #_getVersionFilter( entityType='field', entityName=arguments.field.name, parentEntityName=arguments.object.getTableName(), parametizedValues=false ).sql#"
+		);
+		return !versionInDb.recordCount || versionInDb.version_hash != getFieldVersionHash( field = arguments.field );
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );

@@ -443,6 +443,54 @@ component extends="testbox.system.BaseSpec"{
 
 			} );
 		} );
+
+		describe( "hasFieldVersionChanged", function(){
+			it( "should return true when the version hash of the field does not match the version saved in the database", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObject              = getMockBox().createStub();
+				var mockField               = { name=CreateUUId(), test="fubar" };
+				var mockHash                = Hash( CreateUUId() );
+				var mockTablename           = CreateUUId();
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'field' and entity_name = '#mockField.name#' and parent_entity_name = '#mockTablename#'";
+
+				mockObject.$( "getTablename", mockTablename );
+				schemaVersioningService.$( "getFieldVersionHash" ).$args( field=mockField ).$results( mockHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "version_hash", "varchar", [ [ Hash( CreateUUId() ) ] ] ) );
+
+				expect( schemaVersioningService.hasFieldVersionChanged( field=mockField, object=mockObject ) ).toBe( true );
+
+			} );
+
+			it( "should return false when the version hash of the field matches the version saved in the database", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObject              = getMockBox().createStub();
+				var mockField               = { name=CreateUUId(), test="fubar" };
+				var mockHash                = Hash( CreateUUId() );
+				var mockTablename           = CreateUUId();
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'field' and entity_name = '#mockField.name#' and parent_entity_name = '#mockTablename#'";
+
+				mockObject.$( "getTablename", mockTablename );
+				schemaVersioningService.$( "getFieldVersionHash" ).$args( field=mockField ).$results( mockHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "version_hash", "varchar", [ [ mockHash ] ] ) );
+
+				expect( schemaVersioningService.hasFieldVersionChanged( field=mockField, object=mockObject ) ).toBe( false );
+			} );
+
+			it( "should return true when no version saved in the databse", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockObject              = getMockBox().createStub();
+				var mockField               = { name=CreateUUId(), test="fubar" };
+				var mockHash                = Hash( CreateUUId() );
+				var mockTablename           = CreateUUId();
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'field' and entity_name = '#mockField.name#' and parent_entity_name = '#mockTablename#'";
+
+				mockObject.$( "getTablename", mockTablename );
+				schemaVersioningService.$( "getFieldVersionHash" ).$args( field=mockField ).$results( mockHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "" ) );
+
+				expect( schemaVersioningService.hasFieldVersionChanged( field=mockField, object=mockObject ) ).toBe( true );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
