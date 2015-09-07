@@ -183,6 +183,15 @@
 		return Hash( versionHash );
 	}
 
+	public boolean function hasDbVersionChanged( required any objectLibrary ) {
+		var versionInDb   = _getSqlRunner().runSql(
+			  dsn = _getDsn()
+			, sql = "select version_hash from #_getVersionTableName()# where #_getVersionFilter( entityType='db', entityName='db', parametizedValues=false ).sql#"
+		);
+
+		return !versionInDb.recordCount || versionInDb.version_hash != getDatabaseVersionHash( objectLibrary = arguments.objectLibrary );
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
@@ -191,7 +200,7 @@
 	private struct function _getVersionFilter(
 		  required string  entityType
 		, required string  entityName
-		, required string  parentEntityName
+		,          string  parentEntityName  = ""
 		,          boolean parametizedValues = true
 	) {
 		var filterSql    = "";

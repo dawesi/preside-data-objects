@@ -352,6 +352,48 @@ component extends="testbox.system.BaseSpec"{
 				expect( schemaVersioningService.getDatabaseVersionHash( objectLibrary=mockLibrary ) ).toBe( expectedVersionHash );
 			} );
 		} );
+
+		describe( "hasDbVersionChanged", function(){
+			it( "should return true when the version hash of the object library does not match the version saved in the database", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockLibrary             = getMockBox().createEmptyMock( "presidedataobjects.library.ObjectLibrary" );
+				var mockDbHash              = Hash( CreateUUId() );
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'db' and entity_name = 'db' and parent_entity_name is null";
+
+				mockLibrary.id = CreateUUId();
+				schemaVersioningService.$( "getDatabaseVersionHash" ).$args( objectLibrary=mockLibrary ).$results( mockDbHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "version_hash", "varchar", [ [ Hash( CreateUUId() ) ] ] ) );
+
+				expect( schemaVersioningService.hasDbVersionChanged( objectLibrary=mockLibrary ) ).toBe( true );
+
+			} );
+			it( "should return false when the version hash of the object library matches the version saved in the database", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockLibrary             = getMockBox().createEmptyMock( "presidedataobjects.library.ObjectLibrary" );
+				var mockDbHash              = Hash( CreateUUId() );
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'db' and entity_name = 'db' and parent_entity_name is null";
+
+				mockLibrary.id = CreateUUId();
+				schemaVersioningService.$( "getDatabaseVersionHash" ).$args( objectLibrary=mockLibrary ).$results( mockDbHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "version_hash", "varchar", [ [ mockDbHash ] ] ) );
+
+				expect( schemaVersioningService.hasDbVersionChanged( objectLibrary=mockLibrary ) ).toBe( false );
+			} );
+
+			it( "should return true when no version saved in the databse", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mockLibrary             = getMockBox().createEmptyMock( "presidedataobjects.library.ObjectLibrary" );
+				var mockDbHash              = Hash( CreateUUId() );
+				var expSql                  = "select version_hash from #versionTableName# where entity_type = 'db' and entity_name = 'db' and parent_entity_name is null";
+
+				mockLibrary.id = CreateUUId();
+				schemaVersioningService.$( "getDatabaseVersionHash" ).$args( objectLibrary=mockLibrary ).$results( mockDbHash );
+				mockSqlRunner.$( "runSql" ).$args( sql=expSql, dsn=mockDsn ).$results( QueryNew( "" ) );
+
+				expect( schemaVersioningService.hasDbVersionChanged( objectLibrary=mockLibrary ) ).toBe( true );
+
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
