@@ -499,7 +499,6 @@ component extends="testbox.system.BaseSpec"{
 		variables.mockSqlAdapter        = getMockBox().createStub();
 		variables.mockAdapterFactory    = getMockBox().createEmptyMock( "presidedataobjects.db.adapter.AdapterFactory" );
 		variables.mockSqlRunner         = getMockBox().createEmptyMock( "presidedataobjects.db.SqlRunner" );
-		variables.mockSchemaGenerator   = getMockBox().createStub();
 		variables.mockTableFieldsHelper = getMockBox().createEmptyMock( "presidedataobjects.db.helpers.ObjectTableFieldsHelper" );
 
 		variables.mockAdapterFactory.$( "getAdapter" ).$args( dsn=mockDsn ).$results( mockSqlAdapter );
@@ -511,7 +510,6 @@ component extends="testbox.system.BaseSpec"{
 				, versionTableName        = versionTableName
 				, adapterFactory          = mockAdapterFactory
 				, sqlRunner               = mockSqlRunner
-				, schemaGenerator         = mockSchemaGenerator
 				, objectTableFieldsHelper = mockTableFieldsHelper
 			)
 		);

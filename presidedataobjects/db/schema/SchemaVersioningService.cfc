@@ -3,8 +3,6 @@
  * and storing version information about the database tables
  * that have been generated from preside object definitions
  *
- * @singleton true
- *
  */
  component {
 
