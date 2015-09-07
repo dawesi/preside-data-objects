@@ -331,6 +331,27 @@ component extends="testbox.system.BaseSpec"{
 				expect( versionHash ).toBe( expected );
 			} );
 		} );
+
+		describe( "getDatabaseVersionHash", function(){
+			it( "should return a version hash based on the object hashes of all the objects in the passed object library", function(){
+				var schemaVersioningService = _getVersioningService();
+				var mb                      = getMockBox();
+				var mockLibrary             = mb.createEmptyMock( "presidedataobjects.library.ObjectLibrary" );
+				var mockObjNames            = [ "obj1", "obj2", "obj3" ];
+				var mockObjs                = [ mb.createStub(), mb.createStub(), mb.createStub() ];
+				var hashes                  = [ CreateUUId(), CreateUUId(), CreateUUId() ];
+				var expectedVersionHash     = Hash( hashes.toList( "" ) );
+
+				mockLibrary.$( "listObjects", mockObjNames );
+				for( var i=1; i <= mockObjNames.len(); i++ ) {
+					mockObjs[ i ].id = CreateUUId();
+					mockLibrary.$( "getObject" ).$args( objectName=mockObjNames[i] ).$results( mockObjs[i] );
+					schemaVersioningService.$( "getObjectVersionHash" ).$args( object=mockObjs[i] ).$results( hashes[i] );
+				}
+
+				expect( schemaVersioningService.getDatabaseVersionHash( objectLibrary=mockLibrary ) ).toBe( expectedVersionHash );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/

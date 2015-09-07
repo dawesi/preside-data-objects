@@ -171,6 +171,18 @@
 		return Hash( versionHash );
 	}
 
+	public string function getDatabaseVersionHash( required any objectLibrary ) {
+		var objectNames = arguments.objectLibrary.listObjects();
+		var versionHash = "";
+
+		for( var objectName in objectNames ){
+			var object = arguments.objectLibrary.getObject( objectName=objectName );
+			versionHash &= getObjectVersionHash( object=object );
+		}
+
+		return Hash( versionHash );
+	}
+
 // PRIVATE HELPERS
 	private any function _getAdapter() {
 		return _getAdapterFactory().getAdapter( dsn=_getDsn() );
