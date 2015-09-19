@@ -4,7 +4,7 @@
  * that have been generated from preside object definitions
  *
  */
- component {
+ component extends="presidedataobjects.util.Base" {
 
 // CONSTRUCTOR
 	public any function init(
@@ -159,26 +159,34 @@
 	}
 
 	public string function getObjectVersionHash( required any object ) {
-		var dbFields    = _getObjectTableFieldsHelper().listTableFields( object=arguments.object );
-		var versionHash = "";
+		var args = arguments;
 
-		for( var fieldName in dbFields ) {
-			versionHash &= getFieldVersionHash( field=arguments.object.getProperty( propertyName=fieldName ) );
-		}
+		return _localCache( "getObjectVersionHash" & args.object.getObjectName(), function(){
+			var dbFields    = _getObjectTableFieldsHelper().listTableFields( object=args.object );
+			var versionHash = "";
 
-		return Hash( versionHash );
+			for( var fieldName in dbFields ) {
+				versionHash &= getFieldVersionHash( field=args.object.getProperty( propertyName=fieldName ) );
+			}
+
+			return Hash( versionHash );
+		} );
 	}
 
 	public string function getDatabaseVersionHash( required any objectLibrary ) {
-		var objectNames = arguments.objectLibrary.listObjects();
-		var versionHash = "";
+		var args = arguments;
 
-		for( var objectName in objectNames ){
-			var object = arguments.objectLibrary.getObject( objectName=objectName );
-			versionHash &= getObjectVersionHash( object=object );
-		}
+		return _localCache( "getDatabaseVersionHash", function(){
+			var objectNames = args.objectLibrary.listObjects();
+			var versionHash = "";
 
-		return Hash( versionHash );
+			for( var objectName in objectNames ){
+				var object = args.objectLibrary.getObject( objectName=objectName );
+				versionHash &= getObjectVersionHash( object=object );
+			}
+
+			return Hash( versionHash );
+		} );
 	}
 
 	public boolean function hasDbVersionChanged( required any objectLibrary ) {

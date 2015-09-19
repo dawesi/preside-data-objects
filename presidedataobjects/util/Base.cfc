@@ -20,4 +20,11 @@ component {
 		return final;
 	}
 
+	private any function _localCache( required string key, required any producer ) {
+		variables._cache                  = variables._cache                  ?: {};
+		variables._cache[ arguments.key ] = variables._cache[ arguments.key ] ?: arguments.producer();
+
+		return variables._cache[ arguments.key ] ?: NullValue();
+	}
+
 }

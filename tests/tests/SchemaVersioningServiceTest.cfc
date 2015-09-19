@@ -316,13 +316,13 @@ component extends="testbox.system.BaseSpec"{
 				mockFields.field2 = { versionHash=CreateUUId(), field={ test=CreateUUId() } };
 				mockFields.field3 = { versionHash=CreateUUId(), field={ test=CreateUUId() } };
 
-
+				mockObj.$( "getObjectName", "test" );
 				for( var fieldName in mockFields ) {
 					mockObj.$( "getProperty" ).$args( propertyName=fieldName ).$results( mockFields[ fieldName ].field );
 					schemaVersioningService.$( "getFieldVersionHash" ).$args( field=mockFields[ fieldName ].field ).$results( mockFields[ fieldName ].versionHash );
 					expected &= mockFields[ fieldName ].versionHash;
 				}
-				mockTableFieldsHelper.$( "listTableFields" ).$args( object=mockObj ).$results( mockFields.keyArray() );
+				mockTableFieldsHelper.$( "listTableFields", mockFields.keyArray() );
 
 				expected = Hash( expected );
 
