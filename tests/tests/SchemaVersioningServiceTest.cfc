@@ -1,4 +1,5 @@
 component extends="testbox.system.BaseSpec"{
+	processingdirective preserveCase=true;
 
 /*********************************** LIFE CYCLE Methods ***********************************/
 
@@ -296,16 +297,28 @@ component extends="testbox.system.BaseSpec"{
 		} );
 
 		describe( "getFieldVersionHash", function(){
-			it( "it should return an MD5 hash of the field", function(){
+			it( "it should return an MD5 hash of all the properties of the field that effect the database schema", function(){
 				var schemaVersioningService = _getVersioningService();
-				var field                   = { test=CreateUUId(), blah="test" };
-				var hashed                  = Hash( SerializeJson( field ) );
+				var field                   = { test=CreateUUId(), blah="test", name="test", maxlength=100, dbtype="varchar", required=false, uniqueindexes="blah", indexes="blah2", relationship="many-to-one", relatedto="john" };
+				var fieldWithOnlyDbAttribs  = StructNew( "linked" );
+
+				fieldWithOnlyDbAttribs.name          ="test";
+				fieldWithOnlyDbAttribs.dbtype        ="varchar";
+				fieldWithOnlyDbAttribs.maxlength     =100;
+				fieldWithOnlyDbAttribs.required      =false;
+				fieldWithOnlyDbAttribs.uniqueindexes ="blah";
+				fieldWithOnlyDbAttribs.indexes       ="blah2";
+				fieldWithOnlyDbAttribs.relationship  ="many-to-one";
+				fieldWithOnlyDbAttribs.relatedto     ="john";
+
+				var hashed = Hash( SerializeJson( fieldWithOnlyDbAttribs ) );
 
 				expect( schemaVersioningService.getFieldVersionHash( field=field ) ).toBe( hashed );
 			} );
 		} );
 
-		describe( "getObjectVersionHash", function(){
+		describe( "getObjectVersionHash"
+			, function(){
 			it( "should generate a version hash based on all of its database field version hashes", function(){
 				var schemaVersioningService = _getVersioningService();
 				var mockObj                 = getMockBox().createStub();

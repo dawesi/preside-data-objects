@@ -155,7 +155,16 @@
 	}
 
 	public string function getFieldVersionHash( required struct field ) {
-		return Hash( SerializeJson( arguments.field ) );
+		var dbAttribs = [ "name", "dbtype", "maxlength", "required", "uniqueindexes", "indexes", "relationship", "relatedto" ];
+		var dbField   = StructNew( "linked" );
+
+		for( var attrib in dbAttribs ) {
+			if ( arguments.field.keyExists( attrib ) ) {
+				dbField[ attrib ] = arguments.field[ attrib ];
+			}
+		}
+
+		return Hash( SerializeJson( dbField ) );
 	}
 
 	public string function getObjectVersionHash( required any object ) {
