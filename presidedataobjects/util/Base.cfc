@@ -21,8 +21,12 @@ component {
 	}
 
 	private any function _localCache( required string key, required any producer, struct args={} ) {
-		variables._cache                  = variables._cache                  ?: StructNew( "weak" );
-		variables._cache[ arguments.key ] = variables._cache[ arguments.key ] ?: arguments.producer( argumentCollection=args );
+		variables._cache = variables._cache ?: StructNew( "weak" );
+
+		var skipCache = IsBoolean( arguments.args.skipCache ?: "" ) && arguments.args.skipCache;
+		if ( skipCache || !variables._cache.keyExists( arguments.key ) ) {
+			variables._cache[ arguments.key ] = arguments.producer( argumentCollection=args );
+		}
 
 		return variables._cache[ arguments.key ] ?: NullValue();
 	}
