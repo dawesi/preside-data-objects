@@ -13,6 +13,24 @@ component extends="testbox.system.BaseSpec"{
 /*********************************** BDD SUITES ***********************************/
 
 	function run(){
+		describe( "listTables", function(){
+			it( "should return result of call to getTableInfo() with empty table name returned as array of names", function(){
+				var service        = _getInfoService();
+				var dummyRecordset = QueryNew( "table_name", "varchar", [
+					  [ "table_1"]
+					, [ "table_2"]
+					, [ "table_3"]
+					, [ "table_4"]
+					, [ "table_5"]
+				] );
+				var expected = [ "table_1", "table_2", "table_3", "table_4", "table_5" ];
+
+				service.$( "getTableInfo" ).$args( tableName="", dsn=testDsn ).$results( dummyRecordset );
+
+				expect( service.listTables( dsn=testDsn ) ).toBe( expected );
+			} );
+		} );
+
 		describe( "tableExists()", function(){
 			it( "should return false when getTableInfo() returns an empty recordset", function(){
 				var service   = _getInfoService();

@@ -18,6 +18,12 @@ component extends="presidedataobjects.util.Base" {
 		return db;
 	}
 
+	public array function listTables( required string dsn ) {
+		var tables = getTableInfo( tableName="", dsn=arguments.dsn );
+
+		return tables.recordCount ? ValueArray( tables.table_name ) : [];
+	}
+
 	public query function getTableInfo( required string tableName, required string dsn ) {
 		var cacheKey = "getTableInfo" & SerializeJson( arguments );
 
