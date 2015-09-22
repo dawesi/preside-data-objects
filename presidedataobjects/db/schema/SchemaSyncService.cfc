@@ -14,12 +14,29 @@
 	}
 
 // PUBLIC API
-	public void function syncSchema( required any objectLibrary ) {
-		if ( !_getSchemaVersioningService().hasDbVersionChanged( objectLibrary=arguments.objectLibrary ) ) {
-			return;
+	public struct function listChanges( required any objectLibrary ) {
+		var versioningService = _getSchemaVersioningService();
+
+		if ( !versioningService.hasDbVersionChanged( objectLibrary=arguments.objectLibrary ) ) {
+			return {};
 		}
 
-		_getSqlRunner().runSql( "some sql just to make a test fail should it hit here (still a lot of work to be done)" );
+		var changes = {};
+		for( var objectName in objectLibrary.listObjects() ) {
+			var object = objectLibrary.getObject( objectName=objectName );
+			if ( versioningService.hasObjectVersionChanged( object=object ) ) {
+				changes[ objectName ] = [];
+				var fields = object.listProperties();
+				for( var fieldname in fields ) {
+					var field = object.getProperty( propertyName=fieldname );
+					if ( versioningService.hasFieldVersionChanged( field=field, object=object ) ) {
+						changes[ objectName ].append( fieldname );
+					}
+				}
+			}
+		}
+
+		return changes;
 	}
 
 // GETTERS AND SETTERS
