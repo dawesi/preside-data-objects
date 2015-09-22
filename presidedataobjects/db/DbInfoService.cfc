@@ -90,4 +90,8 @@ component {
 
 		return constraints;
 	}
+
+	public boolean function tableExists( required string tableName, required string dsn ) {
+		return getTableInfo( argumentCollection=arguments ).recordCount > 0;
+	}
 }
