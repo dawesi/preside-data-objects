@@ -20,9 +20,9 @@ component {
 		return final;
 	}
 
-	private any function _localCache( required string key, required any producer ) {
+	private any function _localCache( required string key, required any producer, struct args={} ) {
 		variables._cache                  = variables._cache                  ?: StructNew( "weak" );
-		variables._cache[ arguments.key ] = variables._cache[ arguments.key ] ?: arguments.producer();
+		variables._cache[ arguments.key ] = variables._cache[ arguments.key ] ?: arguments.producer( argumentCollection=args );
 
 		return variables._cache[ arguments.key ] ?: NullValue();
 	}
