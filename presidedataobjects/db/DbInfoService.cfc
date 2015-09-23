@@ -11,28 +11,23 @@ component extends="presidedataobjects.util.Base" {
 
 // PUBLIC API METHODS
 	public query function getDatabaseVersion( required string dsn ) {
-		var db = "";
-
-		dbinfo type="version" datasource=arguments.dsn name="db";
-
-		return db;
+		return _dbinfo( datasource=arguments.dsn, type="version" );
 	}
 
 	public array function listTables( required string dsn ) {
-		var tables = getTableInfo( tableName="", dsn=arguments.dsn );
+		var cacheKey = "listTables" & SerializeJson( arguments );
+		return _localCache( cacheKey, function(){
+			var tables = _dbinfo( datasource=arguments.dsn, type="tables" );
 
-		return tables.recordCount ? ValueArray( tables.table_name ) : [];
+			return tables.recordCount ? ValueArray( tables.table_name ) : [];
+		}, arguments );
 	}
 
 	public query function getTableInfo( required string tableName, required string dsn ) {
 		var cacheKey = "getTableInfo" & SerializeJson( arguments );
 
 		return _localCache( cacheKey, function(){
-			var table = "";
-
-			dbinfo type="tables" name="table" pattern=arguments.tableName datasource=arguments.dsn;
-
-			return table;
+			return _dbInfo( datasource=arguments.dsn, type="tables", pattern=arguments.tableName );
 		}, arguments );
 	}
 
@@ -40,11 +35,7 @@ component extends="presidedataobjects.util.Base" {
 		var cacheKey = "getTableColumns" & SerializeJson( arguments );
 
 		return _localCache( cacheKey, function(){
-			var columns  = "";
-
-			dbinfo type="columns" name="columns" table=arguments.tableName datasource=arguments.dsn;
-
-			return columns;
+			return _dbInfo( datasource=arguments.dsn, type="columns", table=arguments.tableName );
 		}, arguments );
 	}
 
@@ -52,26 +43,21 @@ component extends="presidedataobjects.util.Base" {
 		var cacheKey = "getTableIndexes" & SerializeJson( arguments );
 
 		return _localCache( cacheKey, function(){
-			var indexes = "";
-			var index   = "";
-			var ixs     = {};
+			var rawIndexes       = _dbinfo( datasource=arguments.dsn, type="index", table=arguments.tableName );
+			var convertedIndexes = {};
 
-			dbinfo type="index" table="#arguments.tableName#" name="indexes" datasource="#arguments.dsn#";
-
-			for( index in indexes ){
+			for( var index in rawIndexes ){
 				if ( index.index_name neq "PRIMARY" ) {
-					if ( not StructKeyExists( ixs, index.index_name ) ){
-						ixs[ index.index_name ] = {
-							  unique = not index.non_unique
-							, fields = ""
-						}
+					convertedIndexes[ index.index_name ] = convertedIndexes[ index.index_name ] ?: {
+						  unique = !index.non_unique
+						, fields = []
 					}
 
-					ixs[ index.index_name ].fields = ListAppend( ixs[ index.index_name ].fields, index.column_name );
+					convertedIndexes[ index.index_name ].fields.append( index.column_name );
 				}
 			}
 
-			return ixs;
+			return convertedIndexes;
 		}, arguments );
 	}
 
@@ -114,6 +100,18 @@ component extends="presidedataobjects.util.Base" {
 	}
 
 	public boolean function tableExists( required string tableName, required string dsn ) {
-		return getTableInfo( argumentCollection=arguments ).recordCount > 0;
+		return listTables( dsn=arguments.dsn ).findnocase( arguments.tableName ) > 0;
+	}
+
+// PRIVATE HELPERS
+	private query function _dbinfo( required string datasource, required string type ) {
+		var dbInfoResult = "";
+
+		dbinfo name                = "dbInfoResult"
+		       datasource          = arguments.datasource
+		       type                = arguments.type
+		       attributeCollection = arguments;
+
+		return dbInfoResult;
 	}
 }
