@@ -65,7 +65,7 @@ component extends="presidedataobjects.util.Base" {
 		var cacheKey = "getTableIndexes" & SerializeJson( arguments );
 
 		return _localCache( cacheKey, function(){
-			var keys        = "";
+			var keys        = _dbinfo( datasource=arguments.dsn, type="foreignKeys", table=arguments.tableName );
 			var key         = "";
 			var constraints = {};
 			var rules       = {};
@@ -73,7 +73,6 @@ component extends="presidedataobjects.util.Base" {
 			rules["0"] = "cascade";
 			rules["2"] = "set null";
 
-			dbinfo type="foreignKeys" table=arguments.tableName datasource="#arguments.dsn#" name="keys";
 			for( key in keys ){
 				constraints[ key.fk_name ] = {
 					  pk_table  = key.pktable_name

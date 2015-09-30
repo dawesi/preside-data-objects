@@ -111,6 +111,29 @@ component extends="testbox.system.BaseSpec"{
 				expect( service.getTableIndexes( dsn=testDsn, tableName=tableName ) ).toBe( expectedConversion );
 			} );
 		} );
+
+		describe( "getTableForeignKeys", function(){
+			it( "should return result of call to dbinfo type='foreignKeys' filtered by the passed tablename, reformatted into a useful structure", function(){
+				var service     = _getInfoService();
+				var tableName   = CreateUUId();
+				var dummyResult = QueryNew( 'fk_name,pktable_name,pkcolumn_name,fktable_name,fkcolumn_name,update_rule,delete_rule', 'varchar,varchar,varchar,varchar,varchar,varchar,varchar', [
+					  [ "fk_key1", "tablea", "fielda", "tableb", "fieldc", "0", "0" ]
+					, [ "fk_key2", "tablea", "fieldb", "tablec", "fieldd", "2", "1" ]
+					, [ "fk_key3", "tableb", "fieldx", "tableb", "fieldc", "1", "1" ]
+					, [ "fk_key4", "tableb", "fieldy", "tablea", "fieldx", "2", "2" ]
+				] );
+				var expectedConversion = {
+					  fk_key1 = { pk_table="tablea", fk_table="tableb", pk_column="fielda", fk_column="fieldc", on_update="cascade" , on_delete="cascade"  }
+					, fk_key2 = { pk_table="tablea", fk_table="tablec", pk_column="fieldb", fk_column="fieldd", on_update="set null", on_delete="error"    }
+					, fk_key3 = { pk_table="tableb", fk_table="tableb", pk_column="fieldx", fk_column="fieldc", on_update="error"   , on_delete="error"    }
+					, fk_key4 = { pk_table="tableb", fk_table="tablea", pk_column="fieldy", fk_column="fieldx", on_update="set null", on_delete="set null" }
+				};
+
+				service.$( "_dbInfo" ).$args( datasource=testDsn, type="foreignKeys", table=tableName ).$results( dummyResult );
+
+				expect( service.getTableForeignKeys( dsn=testDsn, tableName=tableName ) ).toBe( expectedConversion );
+			} );
+		} );
 	}
 
 
