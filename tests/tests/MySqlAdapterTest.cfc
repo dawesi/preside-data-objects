@@ -95,7 +95,7 @@ component extends="testbox.system.BaseSpec"{
 				var expected = "create table `some_table` ( `field1` int not null auto_increment primary key, `field2` bit null, `field3` varchar(30) null ) ENGINE=InnoDB";
 				var result  = adapter.getTableDefinitionSql(
 					  tableName="some_table"
-					, columnSql = "`field1` int not null auto_increment primary key, `field2` bit null, `field3` varchar(30) null"
+					, columnDefinitions = [ "`field1` int not null auto_increment primary key", "`field2` bit null", "`field3` varchar(30) null" ]
 				);
 
 				expect( result ).toBe( expected );

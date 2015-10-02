@@ -88,8 +88,8 @@ component {
 		return "alter table #escapeEntity( arguments.tableName )# add #columnDef#";
 	}
 
-	public string function getTableDefinitionSql( required string tableName, required string columnSql ) {
-		return "create table #escapeEntity( arguments.tableName )# ( #arguments.columnSql# ) ENGINE=InnoDB";
+	public string function getTableDefinitionSql( required string tableName, required array columnDefinitions ) {
+		return "create table #escapeEntity( arguments.tableName )# ( #arguments.columnDefinitions.toList( ', ' )# ) ENGINE=InnoDB";
 	}
 
 	public string function getForeignKeyConstraintSql(
