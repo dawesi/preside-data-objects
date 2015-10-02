@@ -24,6 +24,20 @@ component {
 		);
 	}
 
+	public string function getCreateTableSqlFromObject( required any object ) {
+		var propertyNames     = arguments.object.listProperties();
+		var columnDefinitions = [];
+
+		for( var propertyName in propertyNames ) {
+			columnDefinitions.append( getColumnDefinitionSqlFromObjectProperty( property=arguments.object.getProperty( propertyName=propertyName ) ) );
+		}
+
+		return _getDbAdapter().getTableDefinitionSql(
+			  tableName         = arguments.object.getTableName()
+			, columnDefinitions = columnDefinitions
+		);
+	}
+
 
 // GETTERS AND SETTERS
 	private any function _getDbAdapter() {

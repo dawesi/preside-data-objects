@@ -47,6 +47,34 @@ component extends="testbox.system.BaseSpec"{
 				expect( generator.getColumnDefinitionSqlFromObjectProperty( property=property ) ).toBe( mockSql );
 			} );
 		} );
+
+		describe( "getCreateTableSqlFromObject()", function(){
+			it( "should return a create table statement around column definitions for each of the objects properties", function(){
+				var mockObj       = getMockBox().createStub();
+				var generator     = _getGenerator();
+				var dummySql      = CreateUUId();
+				var properties    = StructNew( "linked" );
+				var mockTablename = CreateUUId();
+				var columnDefs    = [];
+
+				properties[ "propa" ] = { test=CreateUUId(), sql=CreateUUId() };
+				properties[ "propb" ] = { test=CreateUUId(), sql=CreateUUId() };
+				properties[ "propc" ] = { test=CreateUUId(), sql=CreateUUId() };
+				properties[ "propd" ] = { test=CreateUUId(), sql=CreateUUId() };
+
+				mockObj.$( "getTablename", mockTablename );
+				mockObj.$( "listProperties", properties.keyArray() );
+				for( var propName in properties ) {
+					mockObj.$( "getProperty" ).$args( propertyName=propName ).$results( properties[ propName ] );
+					generator.$( "getColumnDefinitionSqlFromObjectProperty" ).$args( property=properties[ propName ] ).$results( properties[ propName ].sql );
+					columnDefs.append( properties[ propName ].sql );
+				}
+
+				mockDbAdapter.$( "getTableDefinitionSql" ).$args( tableName=mockTablename, columnDefinitions=columnDefs ).$results( dummySql );
+
+				expect( generator.getCreateTableSqlFromObject( mockObj ) ).toBe( dummySql );
+			} );
+		} );
 	}
 
 /*********************************** PRIVATE HELPERS ***********************************/
