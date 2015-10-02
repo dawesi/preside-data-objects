@@ -2,6 +2,30 @@
  * Class that provides methods for keeping a database in sync
  * with an object library
  *
+ * SOME NOTES to help when coming back to this:
+ *
+ * BEGIN
+ *	IF DBVERSION CHANGED
+ *		objects = objectLibrary.listObjects
+ *		LOOP OVER objects
+ *			IF VERSION CHANGED
+ *			    IF table exists
+ *			    	APPEND update table SQL
+ *			    ELSE
+ *			    	APPEND create table SQL
+ *			    END IF
+ *
+ *			    APPEND index sync SQL
+ *			END IF
+ *		END LOOP
+ *
+ *		LOOP OVER Objects
+ *			GET EXISTING FOREIGN KEYS FOR TABLE
+ *			APPEND KEYS TO DELETE
+ *			APPEND KEYS TO ADD
+ *		END LOOP
+ *	END IF
+ *  END
  */
  component {
 
