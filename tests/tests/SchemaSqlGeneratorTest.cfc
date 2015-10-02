@@ -12,7 +12,7 @@ component extends="testbox.system.BaseSpec"{
 /*********************************** BDD SUITES ***********************************/
 
 	function run(){
-		describe( "getColumnDefinitionSql", function(){
+		describe( "getColumnDefinitionSqlFromObjectProperty()", function(){
 			it( "should return a column definition sql string for the given preside object property", function(){
 				var generator = _getGenerator();
 				var property  = { name="test", type="boolean", dbtype="boolean", required=false };
@@ -27,7 +27,7 @@ component extends="testbox.system.BaseSpec"{
 					, autoIncrement = false
 				).$results( mockSql );
 
-				expect( generator.getColumnDefinitionSql( property=property ) ).toBe( mockSql );
+				expect( generator.getColumnDefinitionSqlFromObjectProperty( property=property ) ).toBe( mockSql );
 			} );
 
 			it( "should return pass primary key and auto increment arguments correctly when they are specified on the property", function(){
@@ -44,7 +44,7 @@ component extends="testbox.system.BaseSpec"{
 					, autoIncrement = true
 				).$results( mockSql );
 
-				expect( generator.getColumnDefinitionSql( property=property ) ).toBe( mockSql );
+				expect( generator.getColumnDefinitionSqlFromObjectProperty( property=property ) ).toBe( mockSql );
 			} );
 		} );
 	}

@@ -13,7 +13,7 @@ component {
 	}
 
 // PUBLIC API
-	public string function getColumnDefinitionSql( required struct property ) {
+	public string function getColumnDefinitionSqlFromObjectProperty( required struct property ) {
 		return _getDbAdapter().getColumnDefinitionSql(
 			  columnName    = arguments.property.name   ?: ""
 			, dbType        = arguments.property.dbType ?: "varchar"
