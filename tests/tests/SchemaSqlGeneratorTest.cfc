@@ -29,6 +29,23 @@ component extends="testbox.system.BaseSpec"{
 
 				expect( generator.getColumnDefinitionSql( property=property ) ).toBe( mockSql );
 			} );
+
+			it( "should return pass primary key and auto increment arguments correctly when they are specified on the property", function(){
+				var generator = _getGenerator();
+				var property  = { name="test", type="string", dbtype="varchar", maxLength=39, required=true, pk=true, generator="increment" };
+				var mockSql   = CreateUUId();
+
+				mockDbAdapter.$( "getColumnDefinitionSql" ).$args(
+					  columnName    = property.name
+					, dbType        = property.dbType
+					, maxLength     = property.maxLength
+					, nullable      = !property.required
+					, primaryKey    = true
+					, autoIncrement = true
+				).$results( mockSql );
+
+				expect( generator.getColumnDefinitionSql( property=property ) ).toBe( mockSql );
+			} );
 		} );
 	}
 

@@ -19,8 +19,8 @@ component {
 			, dbType        = arguments.property.dbType ?: "varchar"
 			, maxLength     = Val( arguments.property.maxLength ?: 0 )
 			, nullable      = !( IsBoolean( arguments.property.required ?: "" ) && arguments.property.required )
-			, primaryKey    = false
-			, autoIncrement = false
+			, primaryKey    = IsBoolean( arguments.property.pk ?: "" ) && arguments.property.pk
+			, autoIncrement = ( arguments.property.generator ?: "" ) == "increment"
 		);
 	}
 
